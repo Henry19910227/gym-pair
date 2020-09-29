@@ -6,5 +6,5 @@ import (
 
 // UserService ...
 type UserService interface {
-	GetByID(id int64) model.User
+	GetByID(id int64) (model.User, error)
 }

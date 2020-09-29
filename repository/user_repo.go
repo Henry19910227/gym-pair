@@ -16,6 +16,13 @@ func NewUserRepository(conn *sql.DB) UserRepository {
 }
 
 // GetById ...
-func (ur *userRepository) GetByID(id int64) model.User {
-	return model.User{}
+func (ur *userRepository) GetByID(id int64) (model.User, error) {
+	query := "SELECT name, age FROM user WHERE id = ?"
+	row := ur.db.QueryRow(query, id)
+	user := model.User{}
+	err := row.Scan(&user.Name, &user.Age)
+	if err != nil {
+		return model.User{}, err
+	}
+	return user, err
 }

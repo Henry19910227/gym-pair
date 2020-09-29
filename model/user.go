@@ -2,6 +2,6 @@ package model
 
 // User ...
 type User struct {
-	name string
-	age  int
+	Name string `json:"name"`
+	Age  int    `json:"age"`
 }

@@ -14,6 +14,6 @@ func NewUserService(repo repository.UserRepository) UserService {
 	return &userService{repo}
 }
 
-func (us *userService) GetByID(id int64) model.User {
-	return model.User{}
+func (us *userService) GetByID(id int64) (model.User, error) {
+	return us.userRepo.GetByID(id)
 }
