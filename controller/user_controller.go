@@ -1,11 +1,10 @@
 package controller
 
 import (
-	"net/http"
 	"strconv"
-	"webDemo/utils"
 
 	"github.com/Henry19910227/gym-pair/service"
+	"github.com/gin-gonic/gin"
 )
 
 // UserController ...
@@ -14,30 +13,30 @@ type UserController struct {
 }
 
 // NewUserController ...
-func NewUserController(s service.UserService) {
+func NewUserController(router *gin.Engine, s service.UserService) {
 	userController := &UserController{
 		UserService: s,
 	}
-	http.HandleFunc("/gympair/user", userController.GetByID)
+	router.GET("/gympair/user/:id", userController.GetByID)
+	router.POST("/gympair/user", userController.Insert)
 }
 
-// GetByID ...
-func (c *UserController) GetByID(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-	uidParam, ok := r.URL.Query()["id"]
-	if !ok || len(uidParam[0]) == 0 {
-		w.Write(utils.JSONData(400, nil, "缺少 name 參數"))
-		return
-	}
-	uid, err := strconv.Atoi(uidParam[0])
+// GetByID 以 uid 查找用戶
+func (uc *UserController) GetByID(c *gin.Context) {
+	uid, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		w.Write(utils.JSONData(400, nil, "請輸入數字"))
+		c.JSON(400, gin.H{"code": 200, "data": nil, "msg": "請輸入數字!"})
 		return
 	}
-	user, err := c.UserService.GetByID(int64(uid))
+	user, err := uc.UserService.GetByID(int64(uid))
 	if err != nil {
-		w.Write(utils.JSONData(200, nil, "查無此id"))
+		c.JSON(400, gin.H{"code": 200, "data": nil, "msg": "查無此用戶!"})
 		return
 	}
-	w.Write(utils.JSONData(200, user, "成功!"))
+	c.JSON(200, gin.H{"code": 200, "data": user, "msg": "success!"})
+}
+
+// Insert 新增用戶
+func (uc *UserController) Insert(c *gin.Context) {
+
 }
