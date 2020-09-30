@@ -26,3 +26,7 @@ func (ur *userRepository) GetByID(id int64) (model.User, error) {
 	}
 	return user, err
 }
+
+func (ur *userRepository) Add(user *model.User) error {
+	return nil
+}

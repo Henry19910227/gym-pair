@@ -3,6 +3,7 @@ package controller
 import (
 	"strconv"
 
+	"github.com/Henry19910227/gym-pair/model"
 	"github.com/Henry19910227/gym-pair/service"
 	"github.com/gin-gonic/gin"
 )
@@ -18,7 +19,7 @@ func NewUserController(router *gin.Engine, s service.UserService) {
 		UserService: s,
 	}
 	router.GET("/gympair/user/:id", userController.GetByID)
-	router.POST("/gympair/user", userController.Insert)
+	router.POST("/gympair/user", userController.Add)
 }
 
 // GetByID 以 uid 查找用戶
@@ -36,7 +37,12 @@ func (uc *UserController) GetByID(c *gin.Context) {
 	c.JSON(200, gin.H{"code": 200, "data": user, "msg": "success!"})
 }
 
-// Insert 新增用戶
-func (uc *UserController) Insert(c *gin.Context) {
-
+// Add 新增用戶
+func (uc *UserController) Add(c *gin.Context) {
+	var user model.User
+	if err := c.ShouldBindJSON(&user); err != nil {
+		c.JSON(200, gin.H{"code": 200, "data": nil, "msg": "新增失敗!"})
+		return
+	}
+	c.JSON(200, gin.H{"code": 200, "data": user, "msg": "新增成功!"})
 }
