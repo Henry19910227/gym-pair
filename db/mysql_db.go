@@ -21,9 +21,9 @@ func NewDB() *sql.DB {
 	if db == nil {
 		var err error
 		datasource := fmt.Sprintf("%v:%v@tcp(%v)/%v", username, pwd, address, database)
-		if db, err = sql.Open("mysql", datasource); err != nil {
+		db, err = sql.Open("mysql", datasource)
+		if err != nil {
 			log.Fatal(err)
-			return nil
 		}
 	}
 	return db
