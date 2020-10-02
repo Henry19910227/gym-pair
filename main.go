@@ -1,8 +1,6 @@
 package main
 
 import (
-	"net/http"
-
 	"github.com/Henry19910227/gym-pair/controller"
 	"github.com/Henry19910227/gym-pair/db"
 	"github.com/Henry19910227/gym-pair/repository"
@@ -18,5 +16,5 @@ func main() {
 	router := gin.Default()
 	controller.NewUserController(router, userService)
 
-	http.ListenAndServe("127.0.0.1:9090", router)
+	router.Run("127.0.0.1:9090")
 }
