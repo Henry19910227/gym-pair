@@ -19,11 +19,13 @@ func NewUserController(router *gin.Engine, s service.UserService) {
 	userController := &UserController{
 		UserService: s,
 	}
-	router.GET("/gympair/v1/user", userController.GetAll)
-	router.GET("/gympair/user/:id", userController.GetByID)
-	router.POST("/gympair/user", userController.Add)
-	router.DELETE("/gympair/user/:id", userController.RemoveByID)
-	router.PUT("/gympair/user", userController.UpdateByID)
+	v1 := router.Group("/gympair/v1")
+	v1.GET("/user", userController.GetAll)
+	v1.GET("/user/:id", userController.GetByID)
+	v1.POST("/user", userController.Add)
+	v1.DELETE("/user/:id", userController.RemoveByID)
+	v1.PUT("/user", userController.UpdateByID)
+	v1.GET("/panic", userController.PanicTest)
 }
 
 // GetAll 列出所有用戶
@@ -92,4 +94,11 @@ func (uc *UserController) UpdateByID(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"code": http.StatusOK, "data": userRes, "msg": "update success!"})
+}
+
+// PanicTest 測試 Panic
+func (uc *UserController) PanicTest(c *gin.Context) {
+	// panic("PanicTest!!!!!")
+	var dict map[string]string //不能只有聲明就開始使用
+	dict["H"] = "Hello"
 }
