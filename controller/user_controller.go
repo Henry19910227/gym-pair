@@ -84,6 +84,7 @@ func (uc *UserController) RemoveByID(c *gin.Context) {
 // UpdateByID 以 uid 更新用戶資料
 func (uc *UserController) UpdateByID(c *gin.Context) {
 	var user model.User
+	// ShouldBindJSON 解析json至model, 並且驗證欄位
 	if err := c.ShouldBindJSON(&user); err != nil {
 		c.JSON(http.StatusOK, gin.H{"code": http.StatusBadRequest, "data": nil, "msg": "錯誤的json格式!"})
 		return

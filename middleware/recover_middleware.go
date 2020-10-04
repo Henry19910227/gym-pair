@@ -15,7 +15,7 @@ func NewRecoverMiddleware() *RecoverMiddleware {
 	return &RecoverMiddleware{}
 }
 
-// Recover ...
+// Recover 攔截panic事件
 func (rm *RecoverMiddleware) Recover(c *gin.Context, recovered interface{}) {
 	// 獲取自定義的panic
 	if str, ok := recovered.(string); ok {
