@@ -28,18 +28,30 @@ func (ur *userRepository) GetAll() ([]*model.User, error) {
 	}
 	users := []*model.User{}
 	for rows.Next() {
-		user := &model.User{}
-		userinfo := &model.Userinfo{}
+		var uid int64
+		var name string
+		var email string
 		var nullAge sql.NullInt64
 		var nullSalary sql.NullInt64
-		if err := rows.Scan(&user.ID, &user.Name, &user.Email, &nullAge, &nullSalary); err == nil {
+		if err := rows.Scan(&uid, &name, &email, &nullAge, &nullSalary); err == nil {
 			// 解決 Left Join 查詢時 userinfo 有可能是空值的狀況
+			var user *model.User
 			if nullAge.Valid && nullSalary.Valid {
-				userinfo.Age = int(nullAge.Int64)
-				userinfo.Salary = int(nullSalary.Int64)
-				user.Userinfo = userinfo
+				user = &model.User{
+					ID:    uid,
+					Name:  name,
+					Email: email,
+					Userinfo: &model.Userinfo{
+						Age:    int(nullAge.Int64),
+						Salary: int(nullSalary.Int64),
+					},
+				}
 			} else {
-				user.Userinfo = nil
+				user = &model.User{
+					ID:    uid,
+					Name:  name,
+					Email: email,
+				}
 			}
 			users = append(users, user)
 		}
@@ -55,20 +67,33 @@ func (ur *userRepository) GetByID(id int64) (*model.User, error) {
 		"ON users.userinfo_id = userinfo.id\n" +
 		"WHERE users.id = ?"
 	row := ur.db.QueryRow(query, id)
-	user := &model.User{}
-	userinfo := &model.Userinfo{}
+
+	var uid int64
+	var name string
+	var email string
 	var nullAge sql.NullInt64
 	var nullSalary sql.NullInt64
-	if err := row.Scan(&user.ID, &user.Name, &user.Email, &nullAge, &nullSalary); err != nil {
+	if err := row.Scan(&uid, &name, &email, &nullAge, &nullSalary); err != nil {
 		return nil, err
 	}
 	// 解決 Left Join 查詢時 userinfo 有可能是空值的狀況
+	var user *model.User
 	if nullAge.Valid && nullSalary.Valid {
-		userinfo.Age = int(nullAge.Int64)
-		userinfo.Salary = int(nullSalary.Int64)
-		user.Userinfo = userinfo
+		user = &model.User{
+			ID:    uid,
+			Name:  name,
+			Email: email,
+			Userinfo: &model.Userinfo{
+				Age:    int(nullAge.Int64),
+				Salary: int(nullSalary.Int64),
+			},
+		}
 	} else {
-		user.Userinfo = nil
+		user = &model.User{
+			ID:    uid,
+			Name:  name,
+			Email: email,
+		}
 	}
 	return user, nil
 }
@@ -126,4 +151,8 @@ func (ur *userRepository) Update(user *model.User) (*model.User, error) {
 		return nil, err
 	}
 	return ur.GetByID(user.ID)
+}
+
+func getUser() *model.User {
+	return &model.User{}
 }
