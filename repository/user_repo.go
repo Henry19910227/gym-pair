@@ -34,25 +34,7 @@ func (ur *userRepository) GetAll() ([]*model.User, error) {
 		var nullAge sql.NullInt64
 		var nullSalary sql.NullInt64
 		if err := rows.Scan(&uid, &name, &email, &nullAge, &nullSalary); err == nil {
-			// 解決 Left Join 查詢時 userinfo 有可能是空值的狀況
-			var user *model.User
-			if nullAge.Valid && nullSalary.Valid {
-				user = &model.User{
-					ID:    uid,
-					Name:  name,
-					Email: email,
-					Userinfo: &model.Userinfo{
-						Age:    int(nullAge.Int64),
-						Salary: int(nullSalary.Int64),
-					},
-				}
-			} else {
-				user = &model.User{
-					ID:    uid,
-					Name:  name,
-					Email: email,
-				}
-			}
+			user := model.NewUser(uid, name, email, nullAge, nullSalary)
 			users = append(users, user)
 		}
 	}
@@ -76,26 +58,7 @@ func (ur *userRepository) GetByID(id int64) (*model.User, error) {
 	if err := row.Scan(&uid, &name, &email, &nullAge, &nullSalary); err != nil {
 		return nil, err
 	}
-	// 解決 Left Join 查詢時 userinfo 有可能是空值的狀況
-	var user *model.User
-	if nullAge.Valid && nullSalary.Valid {
-		user = &model.User{
-			ID:    uid,
-			Name:  name,
-			Email: email,
-			Userinfo: &model.Userinfo{
-				Age:    int(nullAge.Int64),
-				Salary: int(nullSalary.Int64),
-			},
-		}
-	} else {
-		user = &model.User{
-			ID:    uid,
-			Name:  name,
-			Email: email,
-		}
-	}
-	return user, nil
+	return model.NewUser(uid, name, email, nullAge, nullSalary), nil
 }
 
 // Add 新增 user 並且增加關聯的 userinfo
