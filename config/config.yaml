@@ -3,6 +3,10 @@ Server:
   HttpPort: 9090
   ReadTimeout: 60
   WriteTimeout: 60
+App:
+  LogFilePath: /Users/henry/go/src/github.com/Henry19910227/gym-pair/storage/
+  LogFileName: app
+  LogFileExt: log
 Database:
   DBType: mysql
   UserName: henry

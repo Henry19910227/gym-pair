@@ -1,0 +1,5 @@
+time="2020-10-10T23:36:30+08:00" level=warning msg="WOW!" GetAll=All
+time="2020-10-11T03:02:03+08:00" level=info msg="Hello World !!!!!" GetAll=All
+time="2020-10-11T03:02:24+08:00" level=info msg="Hello World !!!!!" GetAll=All
+time="2020-10-11T03:02:32+08:00" level=info msg="Hello World !!!!!" GetAll=All
+time="2020-10-11T03:02:33+08:00" level=info msg="Hello World !!!!!" GetAll=All

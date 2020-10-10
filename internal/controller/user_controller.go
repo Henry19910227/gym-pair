@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/Henry19910227/gym-pair/global"
 	"github.com/Henry19910227/gym-pair/internal/model"
 	"github.com/Henry19910227/gym-pair/internal/service"
 	"github.com/gin-gonic/gin"
@@ -30,6 +31,7 @@ func NewUserController(router *gin.Engine, s service.UserService) {
 
 // GetAll 列出所有用戶
 func (uc *UserController) GetAll(c *gin.Context) {
+	global.Logger.Info("Hello World !!!!!")
 	users, err := uc.UserService.GetAll()
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{"code": http.StatusBadRequest, "data": nil, "msg": err.Error()})

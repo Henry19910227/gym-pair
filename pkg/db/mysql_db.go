@@ -8,6 +8,14 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
+// MysqlSetting ...
+type MysqlSetting interface {
+	GetUserName() string
+	GetPassword() string
+	GetHost() string
+	GetDatabase() string
+}
+
 var (
 	db *sql.DB
 )

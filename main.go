@@ -4,13 +4,13 @@ import (
 	"database/sql"
 	"log"
 
-	"github.com/Henry19910227/gym-pair/db"
-
+	"github.com/Henry19910227/gym-pair/global"
 	"github.com/Henry19910227/gym-pair/internal/controller"
 	"github.com/Henry19910227/gym-pair/internal/middleware"
 	"github.com/Henry19910227/gym-pair/internal/repository"
 	"github.com/Henry19910227/gym-pair/internal/service"
-	"github.com/Henry19910227/gym-pair/pkg/setting"
+	"github.com/Henry19910227/gym-pair/pkg/db"
+	"github.com/Henry19910227/gym-pair/pkg/logger"
 	"github.com/gin-gonic/gin"
 )
 
@@ -23,6 +23,7 @@ var (
 
 func init() {
 	setupDB()
+	setupLogger()
 	setupUserService()
 }
 
@@ -36,11 +37,23 @@ func main() {
 }
 
 func setupDB() {
-	setting, err := setting.NewViperSetting()
+	setting, err := db.NewMysqlSetting()
 	if err != nil {
 		log.Fatalf(err.Error())
 	}
 	mysqlDB = db.NewDB(setting)
+}
+
+func setupLogger() {
+	setting, err := logger.NewLoggerSetting("./config/config.yaml")
+	if err != nil {
+		log.Fatalf(err.Error())
+	}
+	logger, err := logger.NewLogger(setting)
+	if err != nil {
+		log.Fatalf(err.Error())
+	}
+	global.Logger = logger
 }
 
 func setupUserService() {
