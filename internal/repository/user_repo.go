@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"errors"
 
-	"github.com/Henry19910227/gym-pair/model"
+	"github.com/Henry19910227/gym-pair/internal/model"
 )
 
 type userRepository struct {

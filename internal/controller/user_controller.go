@@ -4,8 +4,8 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/Henry19910227/gym-pair/model"
-	"github.com/Henry19910227/gym-pair/service"
+	"github.com/Henry19910227/gym-pair/internal/model"
+	"github.com/Henry19910227/gym-pair/internal/service"
 	"github.com/gin-gonic/gin"
 )
 

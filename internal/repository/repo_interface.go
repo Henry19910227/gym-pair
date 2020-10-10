@@ -1,11 +1,9 @@
-package service
+package repository
 
-import (
-	"github.com/Henry19910227/gym-pair/model"
-)
+import "github.com/Henry19910227/gym-pair/internal/model"
 
-// UserService ...
-type UserService interface {
+// UserRepository ...
+type UserRepository interface {
 	GetAll() ([]*model.User, error)
 	GetByID(id int64) (*model.User, error)
 	Add(user *model.User) (int64, error)

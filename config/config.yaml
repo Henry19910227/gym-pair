@@ -1,0 +1,11 @@
+Server:
+  RunMode: debug
+  HttpPort: 9090
+  ReadTimeout: 60
+  WriteTimeout: 60
+Database:
+  DBType: mysql
+  UserName: henry
+  Password: aaaa8027
+  Host: 127.0.0.1:8889
+  DBName: ichat
