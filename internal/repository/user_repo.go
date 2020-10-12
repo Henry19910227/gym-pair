@@ -104,16 +104,16 @@ func (ur *userRepository) DeleteByID(id int64) error {
 }
 
 // Update ...
-func (ur *userRepository) Update(user *model.User) (*model.User, error) {
+func (ur *userRepository) Update(id int64, name string, email string, age int, salary int) (*model.User, error) {
 	query := "UPDATE users\n" +
 		"INNER JOIN userinfo ON users.userinfo_id = userinfo.id\n" +
 		"SET users.name = ?,users.email = ?,userinfo.age = ?,userinfo.salary = ?\n" +
 		"WHERE users.id = ?"
-	_, err := ur.db.Exec(query, user.Name, user.Email, user.Userinfo.Age, user.Userinfo.Salary, user.ID)
+	_, err := ur.db.Exec(query, name, email, age, salary, id)
 	if err != nil {
 		return nil, err
 	}
-	return ur.GetByID(user.ID)
+	return ur.GetByID(id)
 }
 
 func getUser() *model.User {

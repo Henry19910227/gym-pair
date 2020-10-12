@@ -11,5 +11,5 @@ type UserService interface {
 	GetByID(id int64) (*model.User, error)
 	Add(user *validator.UserAddValidator) (int64, error)
 	DeleteByID(id int64) error
-	Update(user *model.User) (*model.User, error)
+	Update(user *validator.UserUpdateValidator) (*model.User, error)
 }

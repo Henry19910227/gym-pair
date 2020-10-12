@@ -31,6 +31,6 @@ func (us *userService) DeleteByID(id int64) error {
 	return us.userRepo.DeleteByID(id)
 }
 
-func (us *userService) Update(user *model.User) (*model.User, error) {
-	return us.userRepo.Update(user)
+func (us *userService) Update(user *validator.UserUpdateValidator) (*model.User, error) {
+	return us.userRepo.Update(user.ID, user.Name, user.Email, user.Age, user.Salary)
 }
