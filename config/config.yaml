@@ -4,7 +4,7 @@ Server:
   ReadTimeout: 60
   WriteTimeout: 60
 App:
-  LogFilePath: /Users/henry/go/src/github.com/Henry19910227/gym-pair/storage/
+  LogFilePath: .
   LogFileName: app
   LogFileExt: log
 Database:

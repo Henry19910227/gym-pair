@@ -41,7 +41,7 @@ func newPrintLogger() *logrus.Logger {
 }
 
 func newWriteLogger(setting LoggerSetting) (*logrus.Logger, error) {
-	file, err := os.OpenFile(setting.GetLogFilePath()+setting.GetLogFileName()+"."+setting.GetLogFileExt(), os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0777)
+	file, err := os.OpenFile(setting.GetLogFilePath()+"/"+setting.GetLogFileName()+"."+setting.GetLogFileExt(), os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0777)
 	if err != nil {
 		return nil, err
 	}

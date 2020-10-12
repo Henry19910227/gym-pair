@@ -1,8 +1,0 @@
-time="2020-10-10T23:36:30+08:00" level=warning msg="WOW!" GetAll=All
-time="2020-10-11T03:02:03+08:00" level=info msg="Hello World !!!!!" GetAll=All
-time="2020-10-11T03:02:24+08:00" level=info msg="Hello World !!!!!" GetAll=All
-time="2020-10-11T03:02:32+08:00" level=info msg="Hello World !!!!!" GetAll=All
-time="2020-10-11T03:02:33+08:00" level=info msg="Hello World !!!!!" GetAll=All
-{"GetAll":"All","level":"info","msg":"Hello World !!!!!","time":"2020-10-11T09:45:41+08:00"}
-{"UserID":9,"level":"info","msg":"查找用戶id","time":"2020-10-11T11:17:25+08:00"}
-{"UserID":9,"level":"info","msg":"查找用戶id","time":"2020-10-11T11:31:11+08:00"}
