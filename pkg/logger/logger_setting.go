@@ -32,3 +32,8 @@ func (setting *LoggerViperSetting) GetLogFileName() string {
 func (setting *LoggerViperSetting) GetLogFileExt() string {
 	return setting.vp.GetString("App.LogFileExt")
 }
+
+// GetRunMode ...
+func (setting *LoggerViperSetting) GetRunMode() string {
+	return setting.vp.GetString("Server.RunMode")
+}
