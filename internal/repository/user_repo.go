@@ -62,14 +62,14 @@ func (ur *userRepository) GetByID(id int64) (*model.User, error) {
 }
 
 // Add 新增 user 並且增加關聯的 userinfo
-func (ur *userRepository) Add(user *model.User) (int64, error) {
+func (ur *userRepository) Add(name string, email string, age int, salary int) (int64, error) {
 	tx, err := ur.db.Begin()
 	defer tx.Rollback()
 	if err != nil {
 		return 0, err
 	}
 	query := "INSERT INTO userinfo (age,salary) VALUES (?,?)"
-	infoRes, err := tx.Exec(query, user.Userinfo.Age, user.Userinfo.Salary)
+	infoRes, err := tx.Exec(query, age, salary)
 	if err != nil {
 		return 0, err
 	}
@@ -78,7 +78,7 @@ func (ur *userRepository) Add(user *model.User) (int64, error) {
 		return 0, err
 	}
 	query = "INSERT INTO users (name,email,userinfo_id) VALUES (?,?,?)"
-	userRes, err := tx.Exec(query, user.Name, user.Email, infoLastID)
+	userRes, err := tx.Exec(query, name, email, infoLastID)
 	if err != nil {
 		return 0, err
 	}

@@ -7,6 +7,7 @@ import (
 	"github.com/Henry19910227/gym-pair/global"
 	"github.com/Henry19910227/gym-pair/internal/model"
 	"github.com/Henry19910227/gym-pair/internal/service"
+	"github.com/Henry19910227/gym-pair/internal/validator"
 	"github.com/gin-gonic/gin"
 )
 
@@ -31,7 +32,6 @@ func NewUserController(router *gin.Engine, s service.UserService) {
 
 // GetAll 列出所有用戶
 func (uc *UserController) GetAll(c *gin.Context) {
-	global.Logger.Info("Hello World !!!!!")
 	users, err := uc.UserService.GetAll()
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{"code": http.StatusBadRequest, "data": nil, "msg": err.Error()})
@@ -46,6 +46,7 @@ func (uc *UserController) GetByID(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{"code": http.StatusBadRequest, "data": nil, "msg": "請輸入數字!"})
 		return
 	}
+	global.Logger.Info("UserID", uid, "查找用戶id")
 	user, err := uc.UserService.GetByID(int64(uid))
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{"code": http.StatusBadRequest, "data": nil, "msg": "查無此用戶!"})
@@ -56,7 +57,7 @@ func (uc *UserController) GetByID(c *gin.Context) {
 
 // Add 新增用戶
 func (uc *UserController) Add(c *gin.Context) {
-	var user model.User
+	var user validator.UserAddValidator
 	if err := c.ShouldBindJSON(&user); err != nil {
 		c.JSON(http.StatusOK, gin.H{"code": http.StatusBadRequest, "data": nil, "msg": "錯誤的json格式!"})
 		return
