@@ -4,36 +4,37 @@ import (
 	"github.com/spf13/viper"
 )
 
-// LoggerViperSetting ...
-type LoggerViperSetting struct {
+// GPLogSetting ...
+type GPLogSetting struct {
 	vp *viper.Viper
 }
 
-func NewLoggerSetting(filename string) (*LoggerViperSetting, error) {
+// NewGPLogSetting ...
+func NewGPLogSetting(filename string) (*GPLogSetting, error) {
 	vp := viper.New()
 	vp.SetConfigFile(filename)
 	if err := vp.ReadInConfig(); err != nil {
 		return nil, err
 	}
-	return &LoggerViperSetting{vp}, nil
+	return &GPLogSetting{vp}, nil
 }
 
 // GetLogFilePath ...
-func (setting *LoggerViperSetting) GetLogFilePath() string {
+func (setting *GPLogSetting) GetLogFilePath() string {
 	return setting.vp.GetString("App.LogFilePath")
 }
 
 // GetLogFileName ...
-func (setting *LoggerViperSetting) GetLogFileName() string {
+func (setting *GPLogSetting) GetLogFileName() string {
 	return setting.vp.GetString("App.LogFileName")
 }
 
 // GetLogFileExt ...
-func (setting *LoggerViperSetting) GetLogFileExt() string {
+func (setting *GPLogSetting) GetLogFileExt() string {
 	return setting.vp.GetString("App.LogFileExt")
 }
 
 // GetRunMode ...
-func (setting *LoggerViperSetting) GetRunMode() string {
+func (setting *GPLogSetting) GetRunMode() string {
 	return setting.vp.GetString("Server.RunMode")
 }

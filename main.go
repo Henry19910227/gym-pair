@@ -46,15 +46,15 @@ func setupDB() {
 }
 
 func setupLogger() {
-	setting, err := logger.NewLoggerSetting("./config/config.yaml")
+	setting, err := logger.NewGPLogSetting("./config/config.yaml")
 	if err != nil {
 		log.Fatalf(err.Error())
 	}
-	logger, err := logger.NewLogger(setting)
+	logger, err := logger.NewGPLogger(setting)
 	if err != nil {
 		log.Fatalf(err.Error())
 	}
-	global.Logger = logger
+	global.Log = logger
 }
 
 func setupUserService() {

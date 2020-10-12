@@ -6,23 +6,23 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-// LoggerSetting ...
-type LoggerSetting interface {
+// LogSetting ...
+type LogSetting interface {
 	GetLogFilePath() string
 	GetLogFileName() string
 	GetLogFileExt() string
 	GetRunMode() string
 }
 
-// Logger ...
-type Logger struct {
+// GPLogger ...
+type GPLogger struct {
 	RunMode string
 	print   *logrus.Logger
 	write   *logrus.Logger
 }
 
-// NewLogger ...
-func NewLogger(setting LoggerSetting) (*Logger, error) {
+// NewGPLogger ...
+func NewGPLogger(setting LogSetting) (*GPLogger, error) {
 	writeLog, err := newWriteLogger(setting)
 	if err != nil {
 		return nil, err
@@ -30,7 +30,7 @@ func NewLogger(setting LoggerSetting) (*Logger, error) {
 	printLog := newPrintLogger()
 	runMode := setting.GetRunMode()
 
-	return &Logger{runMode, printLog, writeLog}, nil
+	return &GPLogger{runMode, printLog, writeLog}, nil
 }
 
 func newPrintLogger() *logrus.Logger {
@@ -40,7 +40,7 @@ func newPrintLogger() *logrus.Logger {
 	return printLog
 }
 
-func newWriteLogger(setting LoggerSetting) (*logrus.Logger, error) {
+func newWriteLogger(setting LogSetting) (*logrus.Logger, error) {
 	file, err := os.OpenFile(setting.GetLogFilePath()+"/"+setting.GetLogFileName()+"."+setting.GetLogFileExt(), os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0777)
 	if err != nil {
 		return nil, err
@@ -52,7 +52,7 @@ func newWriteLogger(setting LoggerSetting) (*logrus.Logger, error) {
 }
 
 // Trace ...
-func (logger *Logger) Trace(key string, value interface{}, msg string) {
+func (logger *GPLogger) Trace(key string, value interface{}, msg string) {
 	logger.print.WithField(key, value).Trace(msg)
 	if logger.RunMode == "release" {
 		logger.write.WithField(key, value).Trace(msg)
@@ -61,7 +61,7 @@ func (logger *Logger) Trace(key string, value interface{}, msg string) {
 }
 
 // Debug ...
-func (logger *Logger) Debug(key string, value interface{}, msg string) {
+func (logger *GPLogger) Debug(key string, value interface{}, msg string) {
 	logger.print.WithField(key, value).Debug(msg)
 	if logger.RunMode == "release" {
 		logger.write.WithField(key, value).Debug(msg)
@@ -69,7 +69,7 @@ func (logger *Logger) Debug(key string, value interface{}, msg string) {
 }
 
 // Info ...
-func (logger *Logger) Info(key string, value interface{}, msg string) {
+func (logger *GPLogger) Info(key string, value interface{}, msg string) {
 	logger.print.WithField(key, value).Info(msg)
 	if logger.RunMode == "release" {
 		logger.write.WithField(key, value).Info(msg)
@@ -77,7 +77,7 @@ func (logger *Logger) Info(key string, value interface{}, msg string) {
 }
 
 // Warn ...
-func (logger *Logger) Warn(key string, value interface{}, msg string) {
+func (logger *GPLogger) Warn(key string, value interface{}, msg string) {
 	logger.print.WithField(key, value).Warn(msg)
 	if logger.RunMode == "release" {
 		logger.write.WithField(key, value).Warn(msg)
@@ -85,7 +85,7 @@ func (logger *Logger) Warn(key string, value interface{}, msg string) {
 }
 
 // Error ...
-func (logger *Logger) Error(key string, value interface{}, msg string) {
+func (logger *GPLogger) Error(key string, value interface{}, msg string) {
 	logger.print.WithField(key, value).Error(msg)
 	if logger.RunMode == "release" {
 		logger.write.WithField(key, value).Error(msg)
@@ -93,7 +93,7 @@ func (logger *Logger) Error(key string, value interface{}, msg string) {
 }
 
 // Fatal ...
-func (logger *Logger) Fatal(key string, value interface{}, msg string) {
+func (logger *GPLogger) Fatal(key string, value interface{}, msg string) {
 	logger.print.WithField(key, value).Fatal(msg)
 	if logger.RunMode == "release" {
 		logger.write.WithField(key, value).Fatal(msg)
@@ -101,7 +101,7 @@ func (logger *Logger) Fatal(key string, value interface{}, msg string) {
 }
 
 // Panic ...
-func (logger *Logger) Panic(key string, value interface{}, msg string) {
+func (logger *GPLogger) Panic(key string, value interface{}, msg string) {
 	logger.print.WithField(key, value).Panic(msg)
 	if logger.RunMode != "debug" {
 		logger.write.WithField(key, value).Panic(msg)

@@ -46,7 +46,7 @@ func (uc *UserController) GetByID(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{"code": http.StatusBadRequest, "data": nil, "msg": "請輸入數字!"})
 		return
 	}
-	global.Logger.Info("UserID", uid, "查找用戶id")
+	global.Log.Info("UserID", uid, "查找用戶id")
 	user, err := uc.UserService.GetByID(int64(uid))
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{"code": http.StatusBadRequest, "data": nil, "msg": "查無此用戶!"})
