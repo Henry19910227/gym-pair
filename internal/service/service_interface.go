@@ -8,8 +8,8 @@ import (
 // UserService ...
 type UserService interface {
 	GetAll() ([]*model.User, error)
-	GetByID(id int64) (*model.User, error)
-	Add(user *validator.UserAddValidator) (int64, error)
-	DeleteByID(id int64) error
-	Update(user *validator.UserUpdateValidator) (*model.User, error)
+	Get(validator *validator.UserGetValidator) (*model.User, error)
+	Add(validator *validator.UserAddValidator) (int64, error)
+	Delete(validator *validator.UserDeleteValidator) error
+	Update(validator *validator.UserUpdateValidator) (*model.User, error)
 }
