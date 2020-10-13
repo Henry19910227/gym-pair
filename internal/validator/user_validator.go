@@ -2,12 +2,12 @@ package validator
 
 // UserGetValidator ...
 type UserGetValidator struct {
-	ID int64 `form:"id" binding:"required,gte=1"`
+	ID int64 `uri:"id" binding:"required,gte=1"`
 }
 
 // UserDeleteValidator ...
 type UserDeleteValidator struct {
-	ID int64 `form:"id" binding:"required,gte=1"`
+	ID int64 `uri:"id" binding:"required,gte=1"`
 }
 
 // UserAddValidator ...

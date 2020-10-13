@@ -2,7 +2,6 @@ package controller
 
 import (
 	"net/http"
-	"strconv"
 
 	"github.com/Henry19910227/gym-pair/internal/service"
 	"github.com/Henry19910227/gym-pair/internal/validator"
@@ -39,13 +38,12 @@ func (uc *UserController) GetAll(c *gin.Context) {
 
 // Get 以 uid 查找單個用戶
 func (uc *UserController) Get(c *gin.Context) {
-	uid, _ := strconv.Atoi(c.Param("id"))
-	vlidator := validator.UserGetValidator{ID: int64(uid)}
-	if err := c.ShouldBind(&vlidator); err != nil {
+	var validator validator.UserGetValidator
+	if err := c.ShouldBindUri(&validator); err != nil {
 		c.JSON(http.StatusOK, gin.H{"code": http.StatusBadRequest, "data": nil, "msg": err.Error()})
 		return
 	}
-	user, err := uc.UserService.Get(&vlidator)
+	user, err := uc.UserService.Get(&validator)
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{"code": http.StatusBadRequest, "data": nil, "msg": "查無此用戶!"})
 		return
@@ -70,13 +68,12 @@ func (uc *UserController) Add(c *gin.Context) {
 
 // DeleteByID 以 uid 刪除用戶
 func (uc *UserController) DeleteByID(c *gin.Context) {
-	uid, _ := strconv.Atoi(c.Param("id"))
-	vlidator := validator.UserDeleteValidator{ID: int64(uid)}
-	if err := c.ShouldBind(&vlidator); err != nil {
+	validator := validator.UserDeleteValidator{}
+	if err := c.ShouldBindUri(&validator); err != nil {
 		c.JSON(http.StatusOK, gin.H{"code": http.StatusBadRequest, "data": nil, "msg": err.Error()})
 		return
 	}
-	if err := uc.UserService.Delete(&vlidator); err != nil {
+	if err := uc.UserService.Delete(&validator); err != nil {
 		c.JSON(http.StatusOK, gin.H{"code": http.StatusBadRequest, "data": nil, "msg": err.Error()})
 		return
 	}
