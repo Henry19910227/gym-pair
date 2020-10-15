@@ -13,3 +13,6 @@ type UserService interface {
 	Delete(validator *validator.UserDeleteValidator) error
 	Update(validator *validator.UserUpdateValidator) (*model.User, error)
 }
+
+type UploadService interface {
+}
