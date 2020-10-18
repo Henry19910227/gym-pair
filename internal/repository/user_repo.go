@@ -16,7 +16,7 @@ func NewUserRepository(conn *sql.DB) UserRepository {
 	return &userRepository{conn}
 }
 
-// GetAll ...
+// GetAll Implement UserRepository interface
 func (ur *userRepository) GetAll() ([]*model.User, error) {
 	query := "SELECT users.id,users.name,users.email,userinfo.age,userinfo.salary\n" +
 		"FROM users\n" +
@@ -41,7 +41,7 @@ func (ur *userRepository) GetAll() ([]*model.User, error) {
 	return users, nil
 }
 
-// GetById ...
+// GetById Implement UserRepository interface
 func (ur *userRepository) GetByID(id int64) (*model.User, error) {
 	query := "SELECT users.id,users.name,users.email,userinfo.age,userinfo.salary\n" +
 		"FROM users\n" +
@@ -61,7 +61,7 @@ func (ur *userRepository) GetByID(id int64) (*model.User, error) {
 	return model.NewUser(uid, name, email, nullAge, nullSalary), nil
 }
 
-// Add 新增 user 並且增加關聯的 userinfo
+// Add Implement UserRepository interface : 新增 user 並且增加關聯的 userinfo
 func (ur *userRepository) Add(name string, email string, age int, salary int) (int64, error) {
 	tx, err := ur.db.Begin()
 	defer tx.Rollback()
@@ -86,7 +86,7 @@ func (ur *userRepository) Add(name string, email string, age int, salary int) (i
 	return userRes.LastInsertId()
 }
 
-// DeleteByID ...
+// DeleteByID Implement UserRepository interface
 func (ur *userRepository) DeleteByID(id int64) error {
 	query := "DELETE FROM users WHERE id = ?"
 	res, err := ur.db.Exec(query, id)
@@ -103,7 +103,7 @@ func (ur *userRepository) DeleteByID(id int64) error {
 	return nil
 }
 
-// Update ...
+// Update Implement UserRepository interface
 func (ur *userRepository) Update(id int64, name string, email string, age int, salary int) (*model.User, error) {
 	query := "UPDATE users\n" +
 		"INNER JOIN userinfo ON users.userinfo_id = userinfo.id\n" +

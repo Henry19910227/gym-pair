@@ -11,6 +11,7 @@ import (
 	"github.com/Henry19910227/gym-pair/internal/service"
 	"github.com/Henry19910227/gym-pair/pkg/db"
 	"github.com/Henry19910227/gym-pair/pkg/logger"
+	"github.com/Henry19910227/gym-pair/pkg/upload"
 	"github.com/gin-gonic/gin"
 )
 
@@ -35,7 +36,7 @@ func main() {
 	router.Use(settingMidd.Cors)                        //加入解決跨域中間層
 	router.Use(gin.Logger())                            //加入路由Logger
 	controller.NewUserController(router, userService)
-	controller.NewUploadController(router, &uploadService)
+	controller.NewUploadController(router, uploadService)
 
 	router.Run("127.0.0.1:9090")
 }
@@ -65,5 +66,9 @@ func setupUserService() {
 }
 
 func setupUploadService() {
-	uploadService = service.NewUploadService()
+	setting, err := upload.NewGPUploadSetting("./config/config.yaml")
+	if err != nil {
+		log.Fatalf(err.Error())
+	}
+	uploadService = service.NewUploadService(upload.NewGPUpload(setting))
 }

@@ -1,6 +1,8 @@
 package service
 
 import (
+	"mime/multipart"
+
 	"github.com/Henry19910227/gym-pair/internal/model"
 	"github.com/Henry19910227/gym-pair/internal/validator"
 )
@@ -14,5 +16,7 @@ type UserService interface {
 	Update(validator *validator.UserUpdateValidator) (*model.User, error)
 }
 
+// UploadService ...
 type UploadService interface {
+	UploadImage(file multipart.File, filename string) (string, error)
 }

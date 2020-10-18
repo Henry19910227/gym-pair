@@ -51,7 +51,7 @@ func newWriteLogger(setting LogSetting) (*logrus.Logger, error) {
 	return writeLog, nil
 }
 
-// Trace ...
+// Trace implement Logger interface
 func (logger *GPLogger) Trace(key string, value interface{}, msg string) {
 	logger.print.WithField(key, value).Trace(msg)
 	if logger.RunMode == "release" {
@@ -60,7 +60,7 @@ func (logger *GPLogger) Trace(key string, value interface{}, msg string) {
 
 }
 
-// Debug ...
+// Debug implement Logger interface
 func (logger *GPLogger) Debug(key string, value interface{}, msg string) {
 	logger.print.WithField(key, value).Debug(msg)
 	if logger.RunMode == "release" {
@@ -68,7 +68,7 @@ func (logger *GPLogger) Debug(key string, value interface{}, msg string) {
 	}
 }
 
-// Info ...
+// Info implement Logger interface
 func (logger *GPLogger) Info(key string, value interface{}, msg string) {
 	logger.print.WithField(key, value).Info(msg)
 	if logger.RunMode == "release" {
@@ -76,7 +76,7 @@ func (logger *GPLogger) Info(key string, value interface{}, msg string) {
 	}
 }
 
-// Warn ...
+// Warn implement Logger interface
 func (logger *GPLogger) Warn(key string, value interface{}, msg string) {
 	logger.print.WithField(key, value).Warn(msg)
 	if logger.RunMode == "release" {
@@ -84,7 +84,7 @@ func (logger *GPLogger) Warn(key string, value interface{}, msg string) {
 	}
 }
 
-// Error ...
+// Error implement Logger interface
 func (logger *GPLogger) Error(key string, value interface{}, msg string) {
 	logger.print.WithField(key, value).Error(msg)
 	if logger.RunMode == "release" {
@@ -92,7 +92,7 @@ func (logger *GPLogger) Error(key string, value interface{}, msg string) {
 	}
 }
 
-// Fatal ...
+// Fatal implement Logger interface
 func (logger *GPLogger) Fatal(key string, value interface{}, msg string) {
 	logger.print.WithField(key, value).Fatal(msg)
 	if logger.RunMode == "release" {
@@ -100,10 +100,10 @@ func (logger *GPLogger) Fatal(key string, value interface{}, msg string) {
 	}
 }
 
-// Panic ...
+// Panic implement Logger interface
 func (logger *GPLogger) Panic(key string, value interface{}, msg string) {
 	logger.print.WithField(key, value).Panic(msg)
-	if logger.RunMode != "debug" {
+	if logger.RunMode == "release" {
 		logger.write.WithField(key, value).Panic(msg)
 	}
 }

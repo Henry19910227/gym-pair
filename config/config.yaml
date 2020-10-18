@@ -7,6 +7,11 @@ App:
   LogFilePath: .
   LogFileName: app
   LogFileExt: log
+  UploadSavePath: ./storege
+  UploadImageAllowExt:
+    - .jpg
+    - .png
+  UploadImageMaxSize: 5 #MB
 Database:
   DBType: mysql
   UserName: henry
