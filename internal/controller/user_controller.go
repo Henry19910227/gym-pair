@@ -14,9 +14,9 @@ type UserController struct {
 }
 
 // NewUserController ...
-func NewUserController(router *gin.Engine, s service.UserService) {
+func NewUserController(router *gin.Engine, userService service.UserService) {
 	userController := &UserController{
-		UserService: s,
+		UserService: userService,
 	}
 	v1 := router.Group("/gympair/v1")
 	v1.GET("/user", userController.GetAll)
@@ -24,6 +24,8 @@ func NewUserController(router *gin.Engine, s service.UserService) {
 	v1.POST("/user", userController.Add)
 	v1.DELETE("/user/:id", userController.DeleteByID)
 	v1.PUT("/user", userController.UpdateByID)
+	v1.PUT("/user/:id/image", userController.UploadImage)
+	router.StaticFS("/user", http.Dir("./storege"))
 	v1.GET("/panic", userController.PanicTest)
 }
 
@@ -43,7 +45,7 @@ func (uc *UserController) Get(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{"code": http.StatusBadRequest, "data": nil, "msg": err.Error()})
 		return
 	}
-	user, err := uc.UserService.Get(&validator)
+	user, err := uc.UserService.Get(validator.ID)
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{"code": http.StatusBadRequest, "data": nil, "msg": "查無此用戶!"})
 		return
@@ -88,7 +90,7 @@ func (uc *UserController) UpdateByID(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{"code": http.StatusBadRequest, "data": nil, "msg": err.Error()})
 		return
 	}
-	userRes, err := uc.UserService.Update(&validator)
+	userRes, err := uc.UserService.Update(validator.ID, validator.Name, validator.Email, "", validator.Age, validator.Salary)
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{"code": http.StatusBadRequest, "data": nil, "msg": "更新失敗!"})
 		return
@@ -96,9 +98,27 @@ func (uc *UserController) UpdateByID(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"code": http.StatusOK, "data": userRes, "msg": "update success!"})
 }
 
+// UploadImage 用戶上傳照片
+func (uc *UserController) UploadImage(c *gin.Context) {
+	var validator validator.UserImageValidator
+	if err := c.ShouldBindUri(&validator); err != nil {
+		c.JSON(http.StatusOK, gin.H{"code": http.StatusBadRequest, "data": nil, "msg": err.Error()})
+		return
+	}
+	file, fileHeader, err := c.Request.FormFile("image")
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"code": http.StatusBadRequest, "data": nil, "msg": err.Error()})
+		return
+	}
+	if err = uc.UserService.UploadImage(validator.ID, file, fileHeader.Filename); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"code": http.StatusBadRequest, "data": nil, "msg": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"code": http.StatusOK, "data": nil, "msg": "upload success!"})
+}
+
 // PanicTest 測試 Panic
 func (uc *UserController) PanicTest(c *gin.Context) {
-	// panic("PanicTest!!!!!")
-	var dict map[string]string //不能只有聲明就開始使用
+	var dict map[string]string
 	dict["H"] = "Hello"
 }

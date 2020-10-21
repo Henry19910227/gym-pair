@@ -26,3 +26,8 @@ type UserUpdateValidator struct {
 	Age    int    `json:"age" binding:"required"`
 	Salary int    `json:"salary" binding:"required"`
 }
+
+// UserImageValidator ...
+type UserImageValidator struct {
+	ID int64 `uri:"id" binding:"required,gte=1"`
+}

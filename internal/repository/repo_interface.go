@@ -8,5 +8,5 @@ type UserRepository interface {
 	GetByID(id int64) (*model.User, error)
 	Add(name string, email string, age int, salary int) (int64, error)
 	DeleteByID(id int64) error
-	Update(id int64, name string, email string, age int, salary int) (*model.User, error)
+	Update(id int64, name string, email string, image string, age int, salary int) (*model.User, error)
 }

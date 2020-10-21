@@ -1,18 +1,22 @@
 package service
 
 import (
+	"mime/multipart"
+
 	"github.com/Henry19910227/gym-pair/internal/model"
 	"github.com/Henry19910227/gym-pair/internal/repository"
 	"github.com/Henry19910227/gym-pair/internal/validator"
+	"github.com/Henry19910227/gym-pair/pkg/upload"
 )
 
 type userService struct {
 	userRepo repository.UserRepository
+	uploader upload.Upload
 }
 
 // NewUserService ...
-func NewUserService(repo repository.UserRepository) UserService {
-	return &userService{repo}
+func NewUserService(repo repository.UserRepository, uploader upload.Upload) UserService {
+	return &userService{repo, uploader}
 }
 
 // GetAll Implement UserService interface
@@ -21,8 +25,8 @@ func (us *userService) GetAll() ([]*model.User, error) {
 }
 
 // Get Implement UserService interface
-func (us *userService) Get(validator *validator.UserGetValidator) (*model.User, error) {
-	return us.userRepo.GetByID(validator.ID)
+func (us *userService) Get(id int64) (*model.User, error) {
+	return us.userRepo.GetByID(id)
 }
 
 // Add Implement UserService interface
@@ -36,6 +40,23 @@ func (us *userService) Delete(validator *validator.UserDeleteValidator) error {
 }
 
 // Update Implement UserService interface
-func (us *userService) Update(validator *validator.UserUpdateValidator) (*model.User, error) {
-	return us.userRepo.Update(validator.ID, validator.Name, validator.Email, validator.Age, validator.Salary)
+func (us *userService) Update(id int64, name string, email string, image string, age int, salary int) (*model.User, error) {
+	return us.userRepo.Update(id, name, email, image, age, salary)
+}
+
+// UploadImage Implement UserService interface
+func (us *userService) UploadImage(id int64, file multipart.File, filename string) error {
+	user, err := us.userRepo.GetByID(id)
+	if err != nil {
+		return err
+	}
+	newFilename, err := us.uploader.UploadImage(file, filename)
+	if err != nil {
+		return err
+	}
+	user.Image = newFilename
+	if _, err = us.userRepo.Update(user.ID, user.Name, user.Email, user.Image, user.Userinfo.Age, user.Userinfo.Salary); err != nil {
+		return err
+	}
+	return nil
 }

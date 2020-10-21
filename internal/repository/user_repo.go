@@ -18,7 +18,7 @@ func NewUserRepository(conn *sql.DB) UserRepository {
 
 // GetAll Implement UserRepository interface
 func (ur *userRepository) GetAll() ([]*model.User, error) {
-	query := "SELECT users.id,users.name,users.email,userinfo.age,userinfo.salary\n" +
+	query := "SELECT users.id,users.name,users.email,users.image,userinfo.age,userinfo.salary\n" +
 		"FROM users\n" +
 		"LEFT JOIN userinfo\n" +
 		"ON users.userinfo_id = userinfo.id "
@@ -31,10 +31,11 @@ func (ur *userRepository) GetAll() ([]*model.User, error) {
 		var uid int64
 		var name string
 		var email string
+		var image string
 		var nullAge sql.NullInt64
 		var nullSalary sql.NullInt64
-		if err := rows.Scan(&uid, &name, &email, &nullAge, &nullSalary); err == nil {
-			user := model.NewUser(uid, name, email, nullAge, nullSalary)
+		if err := rows.Scan(&uid, &name, &email, &image, &nullAge, &nullSalary); err == nil {
+			user := model.NewUser(uid, name, email, image, nullAge, nullSalary)
 			users = append(users, user)
 		}
 	}
@@ -43,7 +44,7 @@ func (ur *userRepository) GetAll() ([]*model.User, error) {
 
 // GetById Implement UserRepository interface
 func (ur *userRepository) GetByID(id int64) (*model.User, error) {
-	query := "SELECT users.id,users.name,users.email,userinfo.age,userinfo.salary\n" +
+	query := "SELECT users.id,users.name,users.email,users.image,userinfo.age,userinfo.salary\n" +
 		"FROM users\n" +
 		"LEFT JOIN userinfo\n" +
 		"ON users.userinfo_id = userinfo.id\n" +
@@ -53,12 +54,13 @@ func (ur *userRepository) GetByID(id int64) (*model.User, error) {
 	var uid int64
 	var name string
 	var email string
+	var image string
 	var nullAge sql.NullInt64
 	var nullSalary sql.NullInt64
-	if err := row.Scan(&uid, &name, &email, &nullAge, &nullSalary); err != nil {
+	if err := row.Scan(&uid, &name, &email, &image, &nullAge, &nullSalary); err != nil {
 		return nil, err
 	}
-	return model.NewUser(uid, name, email, nullAge, nullSalary), nil
+	return model.NewUser(uid, name, email, image, nullAge, nullSalary), nil
 }
 
 // Add Implement UserRepository interface : 新增 user 並且增加關聯的 userinfo
@@ -104,12 +106,12 @@ func (ur *userRepository) DeleteByID(id int64) error {
 }
 
 // Update Implement UserRepository interface
-func (ur *userRepository) Update(id int64, name string, email string, age int, salary int) (*model.User, error) {
+func (ur *userRepository) Update(id int64, name string, email string, image string, age int, salary int) (*model.User, error) {
 	query := "UPDATE users\n" +
 		"INNER JOIN userinfo ON users.userinfo_id = userinfo.id\n" +
-		"SET users.name = ?,users.email = ?,userinfo.age = ?,userinfo.salary = ?\n" +
+		"SET users.name = ?,users.email = ?,users.image = ?,userinfo.age = ?,userinfo.salary = ?\n" +
 		"WHERE users.id = ?"
-	_, err := ur.db.Exec(query, name, email, age, salary, id)
+	_, err := ur.db.Exec(query, name, email, image, age, salary, id)
 	if err != nil {
 		return nil, err
 	}

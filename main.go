@@ -62,7 +62,11 @@ func setupLogger() {
 }
 
 func setupUserService() {
-	userService = service.NewUserService(repository.NewUserRepository(mysqlDB))
+	setting, err := upload.NewGPUploadSetting("./config/config.yaml")
+	if err != nil {
+		log.Fatalf(err.Error())
+	}
+	userService = service.NewUserService(repository.NewUserRepository(mysqlDB), upload.NewGPUpload(setting))
 }
 
 func setupUploadService() {

@@ -10,10 +10,11 @@ import (
 // UserService ...
 type UserService interface {
 	GetAll() ([]*model.User, error)
-	Get(validator *validator.UserGetValidator) (*model.User, error)
+	Get(id int64) (*model.User, error)
 	Add(validator *validator.UserAddValidator) (int64, error)
 	Delete(validator *validator.UserDeleteValidator) error
-	Update(validator *validator.UserUpdateValidator) (*model.User, error)
+	Update(id int64, name string, email string, image string, age int, salary int) (*model.User, error)
+	UploadImage(id int64, file multipart.File, filename string) error
 }
 
 // UploadService ...

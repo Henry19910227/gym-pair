@@ -7,17 +7,19 @@ type User struct {
 	ID       int64     `json:"id"`
 	Name     string    `json:"name"`
 	Email    string    `json:"email"`
+	Image    string    `json:"image"`
 	Userinfo *Userinfo `json:"userinfo"`
 }
 
 // NewUser ...
-func NewUser(uid int64, name string, email string, nullAge sql.NullInt64, nullSalary sql.NullInt64) *User {
+func NewUser(uid int64, name string, email string, image string, nullAge sql.NullInt64, nullSalary sql.NullInt64) *User {
 
 	if nullAge.Valid && nullSalary.Valid {
 		return &User{
 			ID:    uid,
 			Name:  name,
 			Email: email,
+			Image: image,
 			Userinfo: &Userinfo{
 				Age:    int(nullAge.Int64),
 				Salary: int(nullSalary.Int64),
@@ -28,5 +30,6 @@ func NewUser(uid int64, name string, email string, nullAge sql.NullInt64, nullSa
 		ID:    uid,
 		Name:  name,
 		Email: email,
+		Image: image,
 	}
 }
