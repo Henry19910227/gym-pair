@@ -1,7 +1,9 @@
 package service
 
 import (
+	"errors"
 	"mime/multipart"
+	"path"
 
 	"github.com/Henry19910227/gym-pair/internal/model"
 	"github.com/Henry19910227/gym-pair/internal/repository"
@@ -45,12 +47,21 @@ func (us *userService) Update(id int64, name string, email string, image string,
 }
 
 // UploadImage Implement UserService interface
-func (us *userService) UploadImage(id int64, file multipart.File, filename string) error {
+func (us *userService) UploadImage(id int64, file multipart.File, fileHeader *multipart.FileHeader) error {
+
+	if !us.uploader.CheckUploadImageAllowExt(path.Ext(fileHeader.Filename)) {
+		return errors.New("image ext is not allow")
+	}
+
+	if !us.uploader.CheckUploadImageMaxSize(file) {
+		return errors.New("exceeded maximum file limit")
+	}
+
 	user, err := us.userRepo.GetByID(id)
 	if err != nil {
 		return err
 	}
-	newFilename, err := us.uploader.UploadImage(file, filename)
+	newFilename, err := us.uploader.UploadImage(fileHeader)
 	if err != nil {
 		return err
 	}

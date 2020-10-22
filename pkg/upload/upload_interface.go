@@ -7,7 +7,7 @@ import (
 
 // Upload ...
 type Upload interface {
-	UploadImage(file multipart.File, filename string) (string, error)
+	UploadImage(fileHeader *multipart.FileHeader) (string, error)
 	CheckUploadImageAllowExt(ext string) bool
 	CheckUploadImageMaxSize(file io.Reader) bool
 }

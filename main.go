@@ -16,18 +16,16 @@ import (
 )
 
 var (
-	mysqlDB       *sql.DB
-	userService   service.UserService
-	uploadService service.UploadService
-	recoverMidd   = middleware.NewRecoverMiddleware()
-	settingMidd   = middleware.NewSettingMiddleware()
+	mysqlDB     *sql.DB
+	userService service.UserService
+	recoverMidd = middleware.NewRecoverMiddleware()
+	settingMidd = middleware.NewSettingMiddleware()
 )
 
 func init() {
 	setupLogger()
 	setupDB()
 	setupUserService()
-	setupUploadService()
 }
 
 func main() {
@@ -36,7 +34,6 @@ func main() {
 	router.Use(settingMidd.Cors)                        //加入解決跨域中間層
 	router.Use(gin.Logger())                            //加入路由Logger
 	controller.NewUserController(router, userService)
-	controller.NewUploadController(router, uploadService)
 
 	router.Run("127.0.0.1:9090")
 }
@@ -67,12 +64,4 @@ func setupUserService() {
 		log.Fatalf(err.Error())
 	}
 	userService = service.NewUserService(repository.NewUserRepository(mysqlDB), upload.NewGPUpload(setting))
-}
-
-func setupUploadService() {
-	setting, err := upload.NewGPUploadSetting("./config/config.yaml")
-	if err != nil {
-		log.Fatalf(err.Error())
-	}
-	uploadService = service.NewUploadService(upload.NewGPUpload(setting))
 }

@@ -25,7 +25,7 @@ func NewUserController(router *gin.Engine, userService service.UserService) {
 	v1.DELETE("/user/:id", userController.DeleteByID)
 	v1.PUT("/user", userController.UpdateByID)
 	v1.PUT("/user/:id/image", userController.UploadImage)
-	router.StaticFS("/user", http.Dir("./storege"))
+	v1.StaticFS("/userimage", http.Dir("./storege"))
 	v1.GET("/panic", userController.PanicTest)
 }
 
@@ -110,7 +110,7 @@ func (uc *UserController) UploadImage(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"code": http.StatusBadRequest, "data": nil, "msg": err.Error()})
 		return
 	}
-	if err = uc.UserService.UploadImage(validator.ID, file, fileHeader.Filename); err != nil {
+	if err = uc.UserService.UploadImage(validator.ID, file, fileHeader); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"code": http.StatusBadRequest, "data": nil, "msg": err.Error()})
 		return
 	}

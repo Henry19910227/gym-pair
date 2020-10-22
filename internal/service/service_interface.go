@@ -14,10 +14,5 @@ type UserService interface {
 	Add(validator *validator.UserAddValidator) (int64, error)
 	Delete(validator *validator.UserDeleteValidator) error
 	Update(id int64, name string, email string, image string, age int, salary int) (*model.User, error)
-	UploadImage(id int64, file multipart.File, filename string) error
-}
-
-// UploadService ...
-type UploadService interface {
-	UploadImage(file multipart.File, filename string) (string, error)
+	UploadImage(id int64, file multipart.File, fileHeader *multipart.FileHeader) error
 }

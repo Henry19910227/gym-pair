@@ -11,7 +11,7 @@ App:
   UploadImageAllowExt:
     - .jpg
     - .png
-  UploadImageMaxSize: 5 #MB
+  UploadImageMaxSize: 1 #MB
 Database:
   DBType: mysql
   UserName: henry

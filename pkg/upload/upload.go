@@ -5,7 +5,11 @@ import (
 	"io/ioutil"
 	"mime/multipart"
 	"os"
+	"path"
 	"strings"
+	"time"
+
+	"github.com/Henry19910227/gym-pair/utils"
 )
 
 // GPUpload ...
@@ -19,12 +23,17 @@ func NewGPUpload(setting UploadSetting) *GPUpload {
 }
 
 // UploadImage Implement Upload interface
-func (upload *GPUpload) UploadImage(file multipart.File, filename string) (string, error) {
-	path, err := upload.createUploadSavePath()
+func (upload *GPUpload) UploadImage(fileHeader *multipart.FileHeader) (string, error) {
+	file, err := fileHeader.Open()
 	if err != nil {
 		return "", err
 	}
-	out, err := os.Create(path + "/" + filename)
+	dst, err := upload.createUploadSavePath()
+	if err != nil {
+		return "", err
+	}
+	filename := getFileName(path.Ext(fileHeader.Filename))
+	out, err := os.Create(dst + "/" + filename)
 	if err != nil {
 		return "", err
 	}
@@ -60,4 +69,9 @@ func (upload *GPUpload) createUploadSavePath() (string, error) {
 		return "", err
 	}
 	return upload.setting.GetUploadSavePath(), nil
+}
+
+func getFileName(ext string) string {
+	timeStr := time.Now().Format("2006-01-02 15:04:05")
+	return utils.EncodeMD5(timeStr) + ext
 }
