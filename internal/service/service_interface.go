@@ -13,6 +13,8 @@ type UserService interface {
 	Get(id int64) (*model.User, error)
 	Add(validator *validator.UserAddValidator) (int64, error)
 	Delete(validator *validator.UserDeleteValidator) error
-	Update(id int64, name string, email string, image string, age int, salary int) (*model.User, error)
+	UpdateUserinfo(uid int64, name string, birthday string) (*model.User, error)
+	UpdateEmail(uid int64, email string) (*model.User, error)
+	UpdatePassword(uid int64, oldpwd string, newpwd string) error
 	UploadImage(id int64, file multipart.File, fileHeader *multipart.FileHeader) error
 }

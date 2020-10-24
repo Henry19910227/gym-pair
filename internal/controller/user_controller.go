@@ -13,7 +13,7 @@ type UserController struct {
 	UserService service.UserService
 }
 
-// NewUserController ...
+// NewUserController 初始化Controller與創建路由
 func NewUserController(router *gin.Engine, userService service.UserService) {
 	userController := &UserController{
 		UserService: userService,
@@ -23,8 +23,10 @@ func NewUserController(router *gin.Engine, userService service.UserService) {
 	v1.GET("/user/:id", userController.Get)
 	v1.POST("/user", userController.Add)
 	v1.DELETE("/user/:id", userController.DeleteByID)
-	v1.PUT("/user", userController.UpdateByID)
-	v1.PUT("/user/:id/image", userController.UploadImage)
+	v1.PUT("/user/:id/userinfo", userController.UpdateUserinfo)
+	v1.PUT("/user/:id/email", userController.UpdateEmail)
+	v1.PUT("/user/:id/password", userController.UpdateUserPassword)
+	v1.PUT("/user/:id/image", userController.UpdateUserImage)
 	v1.StaticFS("/userimage", http.Dir("./storege"))
 	v1.GET("/panic", userController.PanicTest)
 }
@@ -40,7 +42,7 @@ func (uc *UserController) GetAll(c *gin.Context) {
 
 // Get 以 uid 查找單個用戶
 func (uc *UserController) Get(c *gin.Context) {
-	var validator validator.UserGetValidator
+	var validator validator.UserIDValidator
 	if err := c.ShouldBindUri(&validator); err != nil {
 		c.JSON(http.StatusOK, gin.H{"code": http.StatusBadRequest, "data": nil, "msg": err.Error()})
 		return
@@ -82,24 +84,68 @@ func (uc *UserController) DeleteByID(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"code": http.StatusOK, "data": nil, "msg": "刪除成功!"})
 }
 
-// UpdateByID 以 uid 更新用戶資料
-func (uc *UserController) UpdateByID(c *gin.Context) {
-	var validator validator.UserUpdateValidator
-	// ShouldBindJSON 解析json至model, 並且驗證欄位
-	if err := c.ShouldBindJSON(&validator); err != nil {
-		c.JSON(http.StatusOK, gin.H{"code": http.StatusBadRequest, "data": nil, "msg": err.Error()})
+// UpdateEmail 更新用戶 Email
+func (uc *UserController) UpdateEmail(c *gin.Context) {
+	uidValidator := validator.UserIDValidator{}
+	if err := c.ShouldBindUri(&uidValidator); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"code": http.StatusBadRequest, "data": nil, "msg": err.Error()})
 		return
 	}
-	userRes, err := uc.UserService.Update(validator.ID, validator.Name, validator.Email, "", validator.Age, validator.Salary)
+	emailValidator := validator.UserEmailValidator{}
+	if err := c.ShouldBindJSON(&emailValidator); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"code": http.StatusBadRequest, "data": nil, "msg": err.Error()})
+		return
+	}
+	user, err := uc.UserService.UpdateEmail(uidValidator.ID, emailValidator.Email)
 	if err != nil {
-		c.JSON(http.StatusOK, gin.H{"code": http.StatusBadRequest, "data": nil, "msg": "更新失敗!"})
+		c.JSON(http.StatusBadRequest, gin.H{"code": http.StatusBadRequest, "data": nil, "msg": err.Error()})
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"code": http.StatusOK, "data": userRes, "msg": "update success!"})
+	c.JSON(http.StatusOK, gin.H{"code": http.StatusOK, "data": user, "msg": "update email success!"})
 }
 
-// UploadImage 用戶上傳照片
-func (uc *UserController) UploadImage(c *gin.Context) {
+// UpdateUserPassword 更新用戶密碼
+func (uc *UserController) UpdateUserPassword(c *gin.Context) {
+	uidValidator := validator.UserIDValidator{}
+	if err := c.ShouldBindUri(&uidValidator); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"code": http.StatusBadRequest, "data": nil, "msg": err.Error()})
+		return
+	}
+	pwdValidator := validator.UserUpdatePwdValidator{}
+	if err := c.ShouldBindJSON(&pwdValidator); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"code": http.StatusBadRequest, "data": nil, "msg": err.Error()})
+		return
+	}
+	err := uc.UserService.UpdatePassword(uidValidator.ID, pwdValidator.OldPwd, pwdValidator.NewPwd)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"code": http.StatusBadRequest, "data": nil, "msg": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"code": http.StatusOK, "data": nil, "msg": "update password success!"})
+}
+
+// UpdateUserinfo 用戶更新個人資訊
+func (uc *UserController) UpdateUserinfo(c *gin.Context) {
+	var uidValidator validator.UserIDValidator
+	if err := c.ShouldBindUri(&uidValidator); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"code": http.StatusBadRequest, "data": nil, "msg": err.Error()})
+		return
+	}
+	var validator validator.UserUpdateUserinfoValidator
+	if err := c.ShouldBindJSON(&validator); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"code": http.StatusBadRequest, "data": nil, "msg": err.Error()})
+		return
+	}
+	user, err := uc.UserService.UpdateUserinfo(uidValidator.ID, validator.Name, validator.Birthday)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"code": http.StatusBadRequest, "data": nil, "msg": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"code": http.StatusOK, "data": user, "msg": "update userinfo success!"})
+}
+
+// UpdateUserImage 用戶上傳照片
+func (uc *UserController) UpdateUserImage(c *gin.Context) {
 	var validator validator.UserImageValidator
 	if err := c.ShouldBindUri(&validator); err != nil {
 		c.JSON(http.StatusOK, gin.H{"code": http.StatusBadRequest, "data": nil, "msg": err.Error()})

@@ -6,7 +6,10 @@ import "github.com/Henry19910227/gym-pair/internal/model"
 type UserRepository interface {
 	GetAll() ([]*model.User, error)
 	GetByID(id int64) (*model.User, error)
-	Add(name string, email string, age int, salary int) (int64, error)
+	Add(email string, password string, name string, birthday string) (int64, error)
 	DeleteByID(id int64) error
-	Update(id int64, name string, email string, image string, age int, salary int) (*model.User, error)
+	UpdateUserinfo(uid int64, name string, birthday string) (*model.User, error)
+	UpdateEmail(uid int64, email string) (*model.User, error)
+	UpdatePassword(uid int64, password string) error
+	UpdateUserImage(uid int64, image string) (*model.User, error)
 }

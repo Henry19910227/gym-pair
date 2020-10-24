@@ -33,7 +33,7 @@ func (us *userService) Get(id int64) (*model.User, error) {
 
 // Add Implement UserService interface
 func (us *userService) Add(validator *validator.UserAddValidator) (int64, error) {
-	return us.userRepo.Add(validator.Name, validator.Email, validator.Age, validator.Salary)
+	return us.userRepo.Add(validator.Email, validator.Password, validator.Name, validator.Birthday)
 }
 
 // Delete Implement UserService interface
@@ -41,9 +41,24 @@ func (us *userService) Delete(validator *validator.UserDeleteValidator) error {
 	return us.userRepo.DeleteByID(validator.ID)
 }
 
-// Update Implement UserService interface
-func (us *userService) Update(id int64, name string, email string, image string, age int, salary int) (*model.User, error) {
-	return us.userRepo.Update(id, name, email, image, age, salary)
+func (us *userService) UpdateUserinfo(uid int64, name string, birthday string) (*model.User, error) {
+	return us.userRepo.UpdateUserinfo(uid, name, birthday)
+}
+
+func (us *userService) UpdateEmail(uid int64, email string) (*model.User, error) {
+	return us.userRepo.UpdateEmail(uid, email)
+}
+
+// UpdatePassword ...
+func (us *userService) UpdatePassword(uid int64, oldpwd string, newpwd string) error {
+	user, err := us.userRepo.GetByID(uid)
+	if err != nil {
+		return err
+	}
+	if user.Password != oldpwd {
+		return errors.New("與舊密碼不一致")
+	}
+	return us.userRepo.UpdatePassword(uid, newpwd)
 }
 
 // UploadImage Implement UserService interface
@@ -56,17 +71,11 @@ func (us *userService) UploadImage(id int64, file multipart.File, fileHeader *mu
 	if !us.uploader.CheckUploadImageMaxSize(file) {
 		return errors.New("exceeded maximum file limit")
 	}
-
-	user, err := us.userRepo.GetByID(id)
-	if err != nil {
-		return err
-	}
 	newFilename, err := us.uploader.UploadImage(fileHeader)
 	if err != nil {
 		return err
 	}
-	user.Image = newFilename
-	if _, err = us.userRepo.Update(user.ID, user.Name, user.Email, user.Image, user.Userinfo.Age, user.Userinfo.Salary); err != nil {
+	if _, err = us.userRepo.UpdateUserImage(id, newFilename); err != nil {
 		return err
 	}
 	return nil

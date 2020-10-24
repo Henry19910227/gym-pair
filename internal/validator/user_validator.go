@@ -1,8 +1,13 @@
 package validator
 
-// UserGetValidator ...
-type UserGetValidator struct {
+// UserIDValidator ...
+type UserIDValidator struct {
 	ID int64 `uri:"id" binding:"required,gte=1"`
+}
+
+// UserEmailValidator ...
+type UserEmailValidator struct {
+	Email string `json:"email" binding:"required,email"`
 }
 
 // UserDeleteValidator ...
@@ -12,19 +17,22 @@ type UserDeleteValidator struct {
 
 // UserAddValidator ...
 type UserAddValidator struct {
-	Name   string `json:"name" binding:"required"`
-	Email  string `json:"email" binding:"required"`
-	Age    int    `json:"age" binding:"required"`
-	Salary int    `json:"salary" binding:"required"`
+	Email    string `json:"email" binding:"required"`
+	Password string `json:"password" binding:"required"`
+	Name     string `json:"name" binding:"required"`
+	Birthday string `json:"birthday" binding:"required,datetime=2006-01-02"`
 }
 
-// UserUpdateValidator ...
-type UserUpdateValidator struct {
-	ID     int64  `json:"id" binding:"required,gte=1"`
-	Name   string `json:"name" binding:"required"`
-	Email  string `json:"email" binding:"required"`
-	Age    int    `json:"age" binding:"required"`
-	Salary int    `json:"salary" binding:"required"`
+// UserUpdatePwdValidator ...
+type UserUpdatePwdValidator struct {
+	OldPwd string `json:"oldpwd" binding:"required"`
+	NewPwd string `json:"newpwd" binding:"required"`
+}
+
+// UserUpdateUserinfoValidator ...
+type UserUpdateUserinfoValidator struct {
+	Name     string `json:"name" binding:"required"`
+	Birthday string `json:"birthday" binding:"required,datetime=2006-01-02"`
 }
 
 // UserImageValidator ...

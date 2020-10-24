@@ -2,6 +2,7 @@ package model
 
 // Userinfo ...
 type Userinfo struct {
-	Age    int `json:"age"`
-	Salary int `json:"salary"`
+	Name     string `json:"name"`
+	Image    string `json:"image"`
+	Birthday string `json:"birthday"`
 }
