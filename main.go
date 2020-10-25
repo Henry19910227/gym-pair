@@ -4,6 +4,8 @@ import (
 	"database/sql"
 	"log"
 
+	"github.com/Henry19910227/gym-pair/pkg/jwt"
+
 	"github.com/Henry19910227/gym-pair/global"
 	"github.com/Henry19910227/gym-pair/internal/controller"
 	"github.com/Henry19910227/gym-pair/internal/middleware"
@@ -18,22 +20,22 @@ import (
 var (
 	mysqlDB     *sql.DB
 	userService service.UserService
-	recoverMidd = middleware.NewRecoverMiddleware()
-	settingMidd = middleware.NewSettingMiddleware()
+	jwtTool     jwt.Tool
 )
 
 func init() {
 	setupLogger()
 	setupDB()
 	setupUserService()
+	setupTokenTool()
 }
 
 func main() {
 	router := gin.New()
-	router.Use(gin.CustomRecovery(recoverMidd.Recover)) //加入攔截panic中間層
-	router.Use(settingMidd.Cors)                        //加入解決跨域中間層
-	router.Use(gin.Logger())                            //加入路由Logger
-	controller.NewUserController(router, userService)
+	router.Use(gin.CustomRecovery(middleware.Recover())) //加入攔截panic中間層
+	router.Use(gin.Logger())                             //加入路由Logger
+	router.Use(middleware.Cors())                        //加入解決跨域中間層
+	controller.NewUserController(router, userService, jwtTool)
 
 	router.Run("127.0.0.1:9090")
 }
@@ -59,9 +61,18 @@ func setupLogger() {
 }
 
 func setupUserService() {
-	setting, err := upload.NewGPUploadSetting("./config/config.yaml")
+	setting, err := upload.NewUploadSetting("./config/config.yaml")
 	if err != nil {
 		log.Fatalf(err.Error())
 	}
-	userService = service.NewUserService(repository.NewUserRepository(mysqlDB), upload.NewGPUpload(setting))
+	userService = service.NewUserService(repository.NewUserRepository(mysqlDB), upload.NewUploadTool(setting))
+}
+
+func setupTokenTool() {
+
+	setting, err := jwt.NewJWTSetting("./config/config.yaml")
+	if err != nil {
+		log.Fatalf(err.Error())
+	}
+	jwtTool = jwt.NewJWTTool(setting)
 }

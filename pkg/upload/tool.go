@@ -12,18 +12,18 @@ import (
 	"github.com/Henry19910227/gym-pair/utils"
 )
 
-// GPUpload ...
-type GPUpload struct {
-	setting UploadSetting
+// GPUploadTool ...
+type GPUploadTool struct {
+	setting Setting
 }
 
-// NewGPUpload ...
-func NewGPUpload(setting UploadSetting) *GPUpload {
-	return &GPUpload{setting}
+// NewUploadTool ...
+func NewUploadTool(setting Setting) *GPUploadTool {
+	return &GPUploadTool{setting}
 }
 
 // UploadImage Implement Upload interface
-func (upload *GPUpload) UploadImage(fileHeader *multipart.FileHeader) (string, error) {
+func (upload *GPUploadTool) UploadImage(fileHeader *multipart.FileHeader) (string, error) {
 	file, err := fileHeader.Open()
 	if err != nil {
 		return "", err
@@ -46,7 +46,7 @@ func (upload *GPUpload) UploadImage(fileHeader *multipart.FileHeader) (string, e
 }
 
 // CheckUploadImageAllowExt Implement Upload interface
-func (upload *GPUpload) CheckUploadImageAllowExt(ext string) bool {
+func (upload *GPUploadTool) CheckUploadImageAllowExt(ext string) bool {
 	ext = strings.ToUpper(ext)
 	for _, v := range upload.setting.GetUploadImageAllowExts() {
 		if ext == strings.ToUpper(v) {
@@ -57,13 +57,13 @@ func (upload *GPUpload) CheckUploadImageAllowExt(ext string) bool {
 }
 
 // CheckUploadImageMaxSize Implement Upload interface
-func (upload *GPUpload) CheckUploadImageMaxSize(file io.Reader) bool {
+func (upload *GPUploadTool) CheckUploadImageMaxSize(file io.Reader) bool {
 	content, _ := ioutil.ReadAll(file)
 	size := len(content)
 	return size <= upload.setting.GetUploadImageMaxSize()*1024*1024
 }
 
-func (upload *GPUpload) createUploadSavePath() (string, error) {
+func (upload *GPUploadTool) createUploadSavePath() (string, error) {
 	err := os.MkdirAll(upload.setting.GetUploadSavePath(), os.ModePerm)
 	if err != nil {
 		return "", err

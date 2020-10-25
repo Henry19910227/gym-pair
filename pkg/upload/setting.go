@@ -9,8 +9,8 @@ type GPUploadSetting struct {
 	vp *viper.Viper
 }
 
-// NewGPUploadSetting ...
-func NewGPUploadSetting(filename string) (*GPUploadSetting, error) {
+// NewUploadSetting ...
+func NewUploadSetting(filename string) (*GPUploadSetting, error) {
 	vp := viper.New()
 	vp.SetConfigFile(filename)
 	if err := vp.ReadInConfig(); err != nil {

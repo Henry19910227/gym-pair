@@ -13,17 +13,21 @@ import (
 
 type userService struct {
 	userRepo repository.UserRepository
-	uploader upload.Upload
+	uploader upload.Tool
 }
 
 // NewUserService ...
-func NewUserService(repo repository.UserRepository, uploader upload.Upload) UserService {
+func NewUserService(repo repository.UserRepository, uploader upload.Tool) UserService {
 	return &userService{repo, uploader}
 }
 
 // GetAll Implement UserService interface
 func (us *userService) GetAll() ([]*model.User, error) {
 	return us.userRepo.GetAll()
+}
+
+func (us *userService) GetUser(email string, password string) (*model.User, error) {
+	return us.userRepo.GetUser(email, password)
 }
 
 // Get Implement UserService interface

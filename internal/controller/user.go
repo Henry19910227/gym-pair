@@ -3,6 +3,9 @@ package controller
 import (
 	"net/http"
 
+	"github.com/Henry19910227/gym-pair/pkg/jwt"
+
+	"github.com/Henry19910227/gym-pair/internal/middleware"
 	"github.com/Henry19910227/gym-pair/internal/service"
 	"github.com/Henry19910227/gym-pair/internal/validator"
 	"github.com/gin-gonic/gin"
@@ -11,16 +14,20 @@ import (
 // UserController ...
 type UserController struct {
 	UserService service.UserService
+	jwtTool     jwt.Tool
 }
 
 // NewUserController 初始化Controller與創建路由
-func NewUserController(router *gin.Engine, userService service.UserService) {
+func NewUserController(router *gin.Engine, userService service.UserService, tool jwt.Tool) {
 	userController := &UserController{
 		UserService: userService,
+		jwtTool:     tool,
 	}
 	v1 := router.Group("/gympair/v1")
+	v1.Use(middleware.JWT()) //JWT驗證token
 	v1.GET("/user", userController.GetAll)
 	v1.GET("/user/:id", userController.Get)
+	v1.POST("/user/login", userController.Login)
 	v1.POST("/user", userController.Add)
 	v1.DELETE("/user/:id", userController.DeleteByID)
 	v1.PUT("/user/:id/userinfo", userController.UpdateUserinfo)
@@ -29,6 +36,26 @@ func NewUserController(router *gin.Engine, userService service.UserService) {
 	v1.PUT("/user/:id/image", userController.UpdateUserImage)
 	v1.StaticFS("/userimage", http.Dir("./storege"))
 	v1.GET("/panic", userController.PanicTest)
+}
+
+// Login 用戶登入
+func (uc *UserController) Login(c *gin.Context) {
+	var validator validator.UserLoginValidator
+	if err := c.ShouldBindJSON(&validator); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"code": http.StatusBadRequest, "data": nil, "msg": err.Error()})
+		return
+	}
+	user, err := uc.UserService.GetUser(validator.Email, validator.Password)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"code": http.StatusBadRequest, "data": nil, "msg": "帳號或密碼錯誤!"})
+		return
+	}
+	tokenString, err := uc.jwtTool.GenerateToken(user.ID)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"code": http.StatusBadRequest, "data": nil, "msg": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"code": http.StatusOK, "token": tokenString, "data": user, "msg": "login success!"})
 }
 
 // GetAll 列出所有用戶
@@ -146,7 +173,7 @@ func (uc *UserController) UpdateUserinfo(c *gin.Context) {
 
 // UpdateUserImage 用戶上傳照片
 func (uc *UserController) UpdateUserImage(c *gin.Context) {
-	var validator validator.UserImageValidator
+	var validator validator.UserIDValidator
 	if err := c.ShouldBindUri(&validator); err != nil {
 		c.JSON(http.StatusOK, gin.H{"code": http.StatusBadRequest, "data": nil, "msg": err.Error()})
 		return

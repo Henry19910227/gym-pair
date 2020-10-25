@@ -10,6 +10,7 @@ import (
 // UserService ...
 type UserService interface {
 	GetAll() ([]*model.User, error)
+	GetUser(email string, password string) (*model.User, error)
 	Get(id int64) (*model.User, error)
 	Add(validator *validator.UserAddValidator) (int64, error)
 	Delete(validator *validator.UserDeleteValidator) error

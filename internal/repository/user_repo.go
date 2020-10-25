@@ -42,6 +42,18 @@ func (ur *userRepository) GetAll() ([]*model.User, error) {
 	return users, nil
 }
 
+// GetUser 以 email 與 password 獲取用戶
+func (ur *userRepository) GetUser(email string, password string) (*model.User, error) {
+	query := "SELECT id FROM users WHERE email = ? AND password = ?"
+	row := ur.db.QueryRow(query, email, password)
+	var uid int64
+	if err := row.Scan(&uid); err != nil {
+		return nil, err
+	}
+	return ur.GetByID(uid)
+
+}
+
 // GetById ...
 func (ur *userRepository) GetByID(id int64) (*model.User, error) {
 	query := "SELECT users.id,users.email,users.password,userinfo.name,userinfo.image,userinfo.birthday\n" +

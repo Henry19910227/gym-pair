@@ -10,6 +10,12 @@ type UserEmailValidator struct {
 	Email string `json:"email" binding:"required,email"`
 }
 
+// UserLoginValidator ...
+type UserLoginValidator struct {
+	Email    string `json:"email" binding:"required,email"`
+	Password string `json:"password" binding:"required"`
+}
+
 // UserDeleteValidator ...
 type UserDeleteValidator struct {
 	ID int64 `uri:"id" binding:"required,gte=1"`
@@ -33,9 +39,4 @@ type UserUpdatePwdValidator struct {
 type UserUpdateUserinfoValidator struct {
 	Name     string `json:"name" binding:"required"`
 	Birthday string `json:"birthday" binding:"required,datetime=2006-01-02"`
-}
-
-// UserImageValidator ...
-type UserImageValidator struct {
-	ID int64 `uri:"id" binding:"required,gte=1"`
 }

@@ -5,6 +5,7 @@ import "github.com/Henry19910227/gym-pair/internal/model"
 // UserRepository ...
 type UserRepository interface {
 	GetAll() ([]*model.User, error)
+	GetUser(email string, password string) (*model.User, error)
 	GetByID(id int64) (*model.User, error)
 	Add(email string, password string, name string, birthday string) (int64, error)
 	DeleteByID(id int64) error

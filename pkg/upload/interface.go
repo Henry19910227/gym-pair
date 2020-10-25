@@ -5,15 +5,15 @@ import (
 	"mime/multipart"
 )
 
-// Upload ...
-type Upload interface {
+// Tool ...
+type Tool interface {
 	UploadImage(fileHeader *multipart.FileHeader) (string, error)
 	CheckUploadImageAllowExt(ext string) bool
 	CheckUploadImageMaxSize(file io.Reader) bool
 }
 
-// UploadSetting ...
-type UploadSetting interface {
+// Setting ...
+type Setting interface {
 	GetUploadSavePath() string
 	GetUploadImageAllowExts() []string
 	GetUploadImageMaxSize() int

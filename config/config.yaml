@@ -18,3 +18,7 @@ Database:
   Password: aaaa8027
   Host: 127.0.0.1:8889
   DBName: ichat
+JWT:
+  Secret: henry
+  Issuer: gympair
+  Expire: 3600
