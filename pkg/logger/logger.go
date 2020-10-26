@@ -6,14 +6,6 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-// LogSetting ...
-type LogSetting interface {
-	GetLogFilePath() string
-	GetLogFileName() string
-	GetLogFileExt() string
-	GetRunMode() string
-}
-
 // GPLogger ...
 type GPLogger struct {
 	RunMode string
