@@ -7,6 +7,11 @@ import (
 	"github.com/Henry19910227/gym-pair/internal/validator"
 )
 
+// LoginService ...
+type LoginService interface {
+	Login(email string, password string) (*model.User, error)
+}
+
 // UserService ...
 type UserService interface {
 	GetAll() ([]*model.User, error)

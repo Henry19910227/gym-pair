@@ -1,31 +1,26 @@
 package middleware
 
 import (
-	"errors"
-	"fmt"
+	"net/http"
 
-	"github.com/dgrijalva/jwt-go"
+	"github.com/Henry19910227/gym-pair/pkg/jwt"
+
 	"github.com/gin-gonic/gin"
 )
 
 // JWT ...
-func JWT() gin.HandlerFunc {
+func JWT(jwtTool jwt.Tool) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		fmt.Println("jwt")
-	}
-}
-
-func verifyToken(tokenString string, key string) error {
-	_, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-		return []byte(key), nil
-	})
-	if err != nil {
-		switch err.(*jwt.ValidationError).Errors {
-		case jwt.ValidationErrorExpired:
-			return errors.New("Timeout")
-		default:
-			return err
+		token := c.GetHeader("token")
+		if token == "" {
+			c.JSON(http.StatusBadRequest, gin.H{"code": http.StatusBadRequest, "data": nil, "msg": "token not null"})
+			c.Abort()
+			return
+		}
+		if err := jwtTool.VerifyToken(token); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"code": http.StatusBadRequest, "data": nil, "msg": err.Error()})
+			c.Abort()
+			return
 		}
 	}
-	return nil
 }

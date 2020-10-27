@@ -20,6 +20,7 @@ func NewJWTTool(setting Setting) *GPJWTTool {
 
 // GenerateToken ...
 func (t *GPJWTTool) GenerateToken(uid int64) (string, error) {
+
 	claims := &jwt.StandardClaims{
 		Id:        strconv.Itoa(int(uid)),
 		ExpiresAt: time.Now().Add(t.setting.GetExpire()).Unix(),
@@ -32,9 +33,9 @@ func (t *GPJWTTool) GenerateToken(uid int64) (string, error) {
 }
 
 // VerifyToken ...
-func VerifyToken(tokenString string, key string) error {
+func (t *GPJWTTool) VerifyToken(tokenString string) error {
 	_, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-		return []byte(key), nil
+		return []byte(t.setting.GetTokenSecret()), nil
 	})
 	if err != nil {
 		switch err.(*jwt.ValidationError).Errors {

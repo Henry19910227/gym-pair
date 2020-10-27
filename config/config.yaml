@@ -21,4 +21,4 @@ Database:
 JWT:
   Secret: henry
   Issuer: gympair
-  Expire: 3600
+  Expire: 1 #hour

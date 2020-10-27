@@ -18,14 +18,16 @@ import (
 )
 
 var (
-	mysqlDB     *sql.DB
-	userService service.UserService
-	jwtTool     jwt.Tool
+	mysqlDB      *sql.DB
+	userService  service.UserService
+	loginService service.LoginService
+	jwtTool      jwt.Tool
 )
 
 func init() {
 	setupLogger()
 	setupDB()
+	setupLoginService()
 	setupUserService()
 	setupTokenTool()
 }
@@ -36,6 +38,7 @@ func main() {
 	router.Use(gin.Logger())                             //加入路由Logger
 	router.Use(middleware.Cors())                        //加入解決跨域中間層
 	controller.NewUserController(router, userService, jwtTool)
+	controller.NewLoginController(router, loginService, jwtTool)
 
 	router.Run("127.0.0.1:9090")
 }
@@ -60,7 +63,7 @@ func setupLogger() {
 	global.Log = logger
 }
 
-func setupUserService() {
+func setupLoginService() {
 	setting, err := upload.NewUploadSetting("./config/config.yaml")
 	if err != nil {
 		log.Fatalf(err.Error())
@@ -68,8 +71,11 @@ func setupUserService() {
 	userService = service.NewUserService(repository.NewUserRepository(mysqlDB), upload.NewUploadTool(setting))
 }
 
-func setupTokenTool() {
+func setupUserService() {
+	loginService = service.NewLoginService(repository.NewUserRepository(mysqlDB))
+}
 
+func setupTokenTool() {
 	setting, err := jwt.NewJWTSetting("./config/config.yaml")
 	if err != nil {
 		log.Fatalf(err.Error())

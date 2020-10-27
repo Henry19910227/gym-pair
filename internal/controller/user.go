@@ -24,7 +24,7 @@ func NewUserController(router *gin.Engine, userService service.UserService, tool
 		jwtTool:     tool,
 	}
 	v1 := router.Group("/gympair/v1")
-	v1.Use(middleware.JWT()) //JWT驗證token
+	v1.Use(middleware.JWT(tool))
 	v1.GET("/user", userController.GetAll)
 	v1.GET("/user/:id", userController.Get)
 	v1.POST("/user/login", userController.Login)

@@ -33,5 +33,5 @@ func (setting *GPJWTSetting) GetIssuer() string {
 
 // GetExpire ...
 func (setting *GPJWTSetting) GetExpire() time.Duration {
-	return setting.vp.GetDuration("JWT.Expire")
+	return setting.vp.GetDuration("JWT.Expire") * time.Hour
 }
