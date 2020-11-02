@@ -1,0 +1,6 @@
+FROM golang
+WORKDIR /GYM-PAIR
+COPY . /GYM-PAIR
+RUN go build main.go 
+EXPOSE 9090
+ENTRYPOINT ./main
