@@ -1,0 +1,19 @@
+version: '2'
+services: 
+    member_service:
+        build: .
+        container_name: gympair_member
+        ports: 
+            - "9090:9090"
+        links:
+            - mysql:gympair_mysql
+    mysql:
+        image: mysql
+        container_name: gympair_mysql
+        ports: 
+            - "3306:3306"
+        environment: 
+            - MYSQL_DATABASE=ichat
+            - MYSQL_ROOT_PASSWORD=123456
+            - MYSQL_USER=henry
+            - MYSQL_PASSWORD=123456
