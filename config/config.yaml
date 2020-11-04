@@ -15,7 +15,7 @@ App:
 Database:
   DBType: mysql
   UserName: henry
-  Password: 123456
+  Password: aaaa8027
   Host: gympair_mysql:3306
   DBName: ichat
 JWT:
