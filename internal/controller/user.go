@@ -28,7 +28,6 @@ func NewUserController(router *gin.Engine, userService service.UserService, tool
 	v1.GET("/user", userController.GetAll)
 	v1.GET("/user/:id", userController.Get)
 	v1.POST("/user/login", userController.Login)
-	v1.POST("/user", userController.Add)
 	v1.DELETE("/user/:id", userController.DeleteByID)
 	v1.PUT("/user/:id/userinfo", userController.UpdateUserinfo)
 	v1.PUT("/user/:id/email", userController.UpdateEmail)
@@ -80,21 +79,6 @@ func (uc *UserController) Get(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"code": http.StatusOK, "data": user, "msg": "success!"})
-}
-
-// Add 新增用戶
-func (uc *UserController) Add(c *gin.Context) {
-	var user validator.UserAddValidator
-	if err := c.ShouldBindJSON(&user); err != nil {
-		c.JSON(http.StatusOK, gin.H{"code": http.StatusBadRequest, "data": nil, "msg": err.Error()})
-		return
-	}
-	uid, err := uc.UserService.Add(&user)
-	if err != nil {
-		c.JSON(http.StatusOK, gin.H{"code": http.StatusBadRequest, "data": nil, "msg": err.Error()})
-		return
-	}
-	c.JSON(http.StatusOK, gin.H{"code": http.StatusOK, "data": uid, "msg": "新增成功!"})
 }
 
 // DeleteByID 以 uid 刪除用戶

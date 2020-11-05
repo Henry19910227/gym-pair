@@ -10,6 +10,7 @@ import (
 // LoginService ...
 type LoginService interface {
 	Login(email string, password string) (*model.User, error)
+	Register(email string, password string, name string, birthday string) (int64, error)
 }
 
 // UserService ...

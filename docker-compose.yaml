@@ -1,14 +1,18 @@
-version: '2'
+version: "2.4"
 services: 
     member_service:
-        build: .
+        build: 
+            context: .
+            target: gympair_member
         container_name: gympair_member
         ports: 
             - "9090:9090"
         links:
             - mysql:gympair_mysql
     mysql:
-        image: mysql
+        build:
+            context: .
+            target: gympair_mysql
         container_name: gympair_mysql
         ports: 
             - "3306:3306"
