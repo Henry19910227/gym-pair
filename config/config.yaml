@@ -12,12 +12,25 @@ App:
     - .jpg
     - .png
   UploadImageMaxSize: 1 #MB
+Log:
+  FileName: app
+  FileExt: log
+  Debug:
+    Path: .
+  Release:
+    Path: .
 Database:
   DBType: mysql
-  UserName: root
-  Password: 123456
-  Host: gympair_mysql:3306
-  DBName: ichat
+  Debug:
+    Host: 127.0.0.1:3306
+    DBName: ichat
+    UserName: root
+    Password: 123456
+  Release:
+    Host: gympair_mysql:3306
+    DBName: ichat
+    UserName: root
+    Password: 123456
 JWT:
   Secret: henry
   Issuer: gympair

@@ -2,9 +2,11 @@ package main
 
 import (
 	"database/sql"
+	"flag"
 	"log"
 
 	"github.com/Henry19910227/gym-pair/pkg/jwt"
+	"github.com/spf13/viper"
 
 	"github.com/Henry19910227/gym-pair/global"
 	"github.com/Henry19910227/gym-pair/internal/controller"
@@ -26,9 +28,11 @@ var (
 	userService  service.UserService
 	loginService service.LoginService
 	jwtTool      jwt.Tool
+	viperTool    *viper.Viper
 )
 
 func init() {
+	setupViper()
 	setupLogger()
 	setupDB()
 	setupLoginService()
@@ -63,19 +67,25 @@ func main() {
 	router.Run(":9090")
 }
 
-func setupDB() {
-	setting, err := db.NewMysqlSetting("./config/config.yaml")
-	if err != nil {
+func setupViper() {
+	vp := viper.New()
+	vp.SetConfigFile("./config/config.yaml")
+	if err := vp.ReadInConfig(); err != nil {
 		log.Fatalf(err.Error())
 	}
+	var mode string
+	flag.StringVar(&mode, "m", "debug", "獲取運行模式")
+	vp.Set("Server.RunMode", mode)
+	viperTool = vp
+}
+
+func setupDB() {
+	setting := db.NewMysqlSetting(viperTool)
 	mysqlDB = db.NewDB(setting)
 }
 
 func setupLogger() {
-	setting, err := logger.NewGPLogSetting("./config/config.yaml")
-	if err != nil {
-		log.Fatalf(err.Error())
-	}
+	setting := logger.NewGPLogSetting(viperTool)
 	logger, err := logger.NewGPLogger(setting)
 	if err != nil {
 		log.Fatalf(err.Error())

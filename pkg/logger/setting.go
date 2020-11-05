@@ -6,32 +6,32 @@ import (
 
 // GPLogSetting ...
 type GPLogSetting struct {
-	vp *viper.Viper
+	vp   *viper.Viper
+	mode string
 }
 
 // NewGPLogSetting ...
-func NewGPLogSetting(filename string) (*GPLogSetting, error) {
-	vp := viper.New()
-	vp.SetConfigFile(filename)
-	if err := vp.ReadInConfig(); err != nil {
-		return nil, err
-	}
-	return &GPLogSetting{vp}, nil
+func NewGPLogSetting(viperTool *viper.Viper) *GPLogSetting {
+	return &GPLogSetting{viperTool, viperTool.GetString("Server.RunMode")}
 }
 
 // GetLogFilePath ...
 func (setting *GPLogSetting) GetLogFilePath() string {
-	return setting.vp.GetString("App.LogFilePath")
+	if setting.mode == "debug" {
+		return setting.vp.GetString("Log.Debug.Path")
+	}
+	return setting.vp.GetString("Log.Release.Path")
+
 }
 
 // GetLogFileName ...
 func (setting *GPLogSetting) GetLogFileName() string {
-	return setting.vp.GetString("App.LogFileName")
+	return setting.vp.GetString("Log.FileName")
 }
 
 // GetLogFileExt ...
 func (setting *GPLogSetting) GetLogFileExt() string {
-	return setting.vp.GetString("App.LogFileExt")
+	return setting.vp.GetString("Log.FileExt")
 }
 
 // GetRunMode ...

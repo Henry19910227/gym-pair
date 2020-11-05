@@ -6,40 +6,43 @@ import (
 
 // MysqlViperSetting ...
 type MysqlViperSetting struct {
-	vp *viper.Viper
+	vp   *viper.Viper
+	mode string
 }
 
 // NewMysqlSetting ...
-func NewMysqlSetting(filename string) (*MysqlViperSetting, error) {
-	vp := viper.New()
-	vp.SetConfigFile(filename)
-	if err := vp.ReadInConfig(); err != nil {
-		return nil, err
-	}
-	return &MysqlViperSetting{vp}, nil
+func NewMysqlSetting(viperTool *viper.Viper) *MysqlViperSetting {
+	return &MysqlViperSetting{viperTool, viperTool.GetString("Server.RunMode")}
 }
 
 // GetUserName ...
 func (setting *MysqlViperSetting) GetUserName() string {
-	return setting.vp.GetString("Database.UserName")
+	if setting.mode == "debug" {
+		return setting.vp.GetString("Database.Debug.UserName")
+	}
+	return setting.vp.GetString("Database.Release.UserName")
 }
 
 // GetPassword ...
 func (setting *MysqlViperSetting) GetPassword() string {
-	return setting.vp.GetString("Database.Password")
+	if setting.mode == "debug" {
+		return setting.vp.GetString("Database.Debug.Password")
+	}
+	return setting.vp.GetString("Database.Release.Password")
 }
 
 // GetHost ...
 func (setting *MysqlViperSetting) GetHost() string {
-	return setting.vp.GetString("Database.Host")
+	if setting.mode == "debug" {
+		return setting.vp.GetString("Database.Debug.Host")
+	}
+	return setting.vp.GetString("Database.Release.Host")
 }
 
 // GetDatabase ...
 func (setting *MysqlViperSetting) GetDatabase() string {
-	return setting.vp.GetString("Database.DBName")
-}
-
-// SetHost ...
-func (setting *MysqlViperSetting) SetHost(host string) {
-	setting.vp.Set("Database.Host", host)
+	if setting.mode == "debug" {
+		return setting.vp.GetString("Database.Debug.DBName")
+	}
+	return setting.vp.GetString("Database.Release.DBName")
 }
