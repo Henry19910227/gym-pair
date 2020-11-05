@@ -10,9 +10,9 @@ type MysqlViperSetting struct {
 }
 
 // NewMysqlSetting ...
-func NewMysqlSetting() (*MysqlViperSetting, error) {
+func NewMysqlSetting(filename string) (*MysqlViperSetting, error) {
 	vp := viper.New()
-	vp.SetConfigFile("./config/config.yaml")
+	vp.SetConfigFile(filename)
 	if err := vp.ReadInConfig(); err != nil {
 		return nil, err
 	}
@@ -37,4 +37,9 @@ func (setting *MysqlViperSetting) GetHost() string {
 // GetDatabase ...
 func (setting *MysqlViperSetting) GetDatabase() string {
 	return setting.vp.GetString("Database.DBName")
+}
+
+// SetHost ...
+func (setting *MysqlViperSetting) SetHost(host string) {
+	setting.vp.Set("Database.Host", host)
 }

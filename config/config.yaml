@@ -14,8 +14,8 @@ App:
   UploadImageMaxSize: 1 #MB
 Database:
   DBType: mysql
-  UserName: henry
-  Password: aaaa8027
+  UserName: root
+  Password: 123456
   Host: gympair_mysql:3306
   DBName: ichat
 JWT:

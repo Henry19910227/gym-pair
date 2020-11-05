@@ -6,4 +6,4 @@ EXPOSE 9090
 ENTRYPOINT ./main
 
 FROM mysql AS gympair_mysql
-COPY ./pkg/db/gympair.sql /docker-entrypoint-initdb.d
+COPY ./gympair.sql /docker-entrypoint-initdb.d

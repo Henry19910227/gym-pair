@@ -64,7 +64,7 @@ func main() {
 }
 
 func setupDB() {
-	setting, err := db.NewMysqlSetting()
+	setting, err := db.NewMysqlSetting("./config/config.yaml")
 	if err != nil {
 		log.Fatalf(err.Error())
 	}
