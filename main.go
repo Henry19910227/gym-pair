@@ -75,6 +75,7 @@ func setupViper() {
 	}
 	var mode string
 	flag.StringVar(&mode, "m", "debug", "獲取運行模式")
+	flag.Parse()
 	vp.Set("Server.RunMode", mode)
 	viperTool = vp
 }

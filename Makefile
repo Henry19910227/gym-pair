@@ -1,4 +1,4 @@
-release:
+run:
 	docker-compose up --build -d
-debug:
+mysql:
 	docker-compose up --build -d mysql

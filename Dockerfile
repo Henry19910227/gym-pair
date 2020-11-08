@@ -1,4 +1,4 @@
-FROM golang AS gympair_member
+FROM golang AS gympair_api
 WORKDIR /GYM-PAIR
 COPY . /GYM-PAIR
 RUN go build main.go 

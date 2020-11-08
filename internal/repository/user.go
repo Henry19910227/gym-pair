@@ -78,10 +78,10 @@ func (ur *userRepository) GetByID(id int64) (*model.User, error) {
 // Add ...
 func (ur *userRepository) Add(email string, password string, name string, birthday string) (int64, error) {
 	tx, err := ur.db.Begin()
-	defer tx.Rollback()
 	if err != nil {
 		return 0, err
 	}
+	defer tx.Rollback()
 	query := "INSERT INTO userinfo (name,image,birthday) VALUES (?,?,?)"
 	infoRes, err := tx.Exec(query, name, "", birthday)
 	if err != nil {
